@@ -31,7 +31,7 @@ svg{display:block}
 /* ---------- Matières ---------- */
 .rays{background:repeating-conic-gradient(from 0deg at 50% 44%,#220E3A 0deg 5deg,#170829 5deg 10deg)}
 .vignette{background:radial-gradient(ellipse 72% 68% at 50% 42%,#08030D00 0%,#08030DA0 72%,#08030D 100%)}
-.halo{background:radial-gradient(ellipse at 50% 50%,#FF3E8A38 0%,#FF3E8A00 62%)}
+.halo{background:radial-gradient(ellipse at 50% 50%,#FFC23D26 0%,#FFC23D00 62%)}
 .beam{background:linear-gradient(180deg,#FFF3D0 0%,#FFF3D000 92%);clip-path:polygon(47% 0,53% 0,100% 100%,0 100%)}
 .curtain-l{background:linear-gradient(90deg,#00000000 55%,#00000080),repeating-linear-gradient(90deg,#4E0612 0,#8E0F1E 9px,#C8213B 15px,#E0435A 17px,#C8213B 19px,#8E0F1E 26px,#4E0612 34px);clip-path:polygon(0 0,100% 0,96% 18%,84% 38%,62% 58%,58% 63%,66% 74%,82% 100%,0 100%)}
 .curtain-r{background:linear-gradient(270deg,#00000000 55%,#00000080),repeating-linear-gradient(270deg,#4E0612 0,#8E0F1E 9px,#C8213B 15px,#E0435A 17px,#C8213B 19px,#8E0F1E 26px,#4E0612 34px);clip-path:polygon(100% 0,0 0,4% 18%,16% 38%,38% 58%,42% 63%,34% 74%,18% 100%,100% 100%)}
@@ -54,7 +54,7 @@ svg{display:block}
 .cabinet{background:linear-gradient(180deg,#FFF0B8 0%,#E0A93A 18%,#FFE38E 45%,#B07A1C 82%,#E8B44A 100%)}
 .cabinner{background:radial-gradient(ellipse at 28% 50%,#3C1644 0%,#1C0A24 58%,#12061A 100%)}
 .glare{background:linear-gradient(115deg,#FFFFFF12 0%,#FFFFFF05 28%,#FFFFFF00 29%);pointer-events:none}
-.tube{background-image:radial-gradient(circle,#FFFFFF 0 1.6px,#FFFFFF00 2.4px),radial-gradient(circle,#FFFFFFAA 0 1.1px,#FFFFFF00 1.9px),linear-gradient(180deg,#FFB13D,#FF3E8A 55%,#9B5CFF);background-size:16px 17px,16px 11px,100% 100%;background-position:3px 0,-4px 5px,0 0;border-radius:8px;box-shadow:0 0 16px #FF3E8A99,inset 0 0 0 1px #FFFFFF40;animation:bubbles 2.4s linear infinite}
+.tube{background-image:radial-gradient(circle,#FFFFFF 0 1.6px,#FFFFFF00 2.4px),radial-gradient(circle,#FFFFFFAA 0 1.1px,#FFFFFF00 1.9px),linear-gradient(180deg,#FFE9A6,#FFC23D 45%,#E08A1E);background-size:16px 17px,16px 11px,100% 100%;background-position:3px 0,-4px 5px,0 0;border-radius:8px;box-shadow:0 0 16px #FFC23D99,inset 0 0 0 1px #FFFFFF60;animation:bubbles 2.4s linear infinite}
 @keyframes bubbles{to{background-position:3px -68px,-4px -39px,0 0}}
 .chrome{background:conic-gradient(from 0deg,#FFF0B8,#B07A1C 25%,#FFE38E 45%,#8A5A10 70%,#FFF0B8)}
 .window{background:radial-gradient(circle,#FFB13D40 0%,#3C1644 70%)}
@@ -110,8 +110,8 @@ img.av{background:#2A1430}
 .t.p{width:auto;min-width:calc(var(--tw)*.35);color:var(--cream);font-size:calc(var(--tw)*.6)}
 .t.flip{animation:flip .55s cubic-bezier(.3,1.4,.5,1) both}
 @keyframes flip{from{transform:perspective(300px) rotateX(-95deg);opacity:0}}
-.mys{width:100%;height:62px;border-radius:7px;border:1px solid #7A4C96;background:linear-gradient(180deg,#3E1D58,#25103A);display:flex;align-items:center;justify-content:center;gap:18px;box-shadow:inset 0 2px 0 #FFFFFF12,inset 0 -4px 0 #0A0410,0 5px 0 #00000088;color:#FFC23D80;font-size:22px}
-.mys b{font-family:var(--display);font-weight:400;font-size:30px;letter-spacing:.5em;margin-right:-.5em;color:#FFC23DB0}
+.mys{width:100%;height:78px;border-radius:7px;border:1px solid #7A4C96;background:linear-gradient(180deg,#3E1D58,#25103A);display:flex;align-items:center;justify-content:center;gap:18px;box-shadow:inset 0 2px 0 #FFFFFF12,inset 0 -4px 0 #0A0410,0 5px 0 #00000088;color:#FFC23D80;font-size:22px}
+.mys b{font-family:var(--display);font-weight:400;font-size:38px;letter-spacing:.5em;margin-right:-.5em;color:#FFC23DB0}
 .mys.sm{height:32px;border-radius:5px;gap:12px;font-size:12px}
 .mys.sm b{font-size:15px}
 
@@ -127,13 +127,8 @@ body.host{height:100vh;overflow:hidden}
 .stage .floor{left:0;right:0;bottom:0;height:96px}
 .stage .floorline{left:0;right:0;bottom:94px;height:2px;background:var(--gold);opacity:.55;box-shadow:0 0 16px var(--gold)}
 .stage .leds{left:150px;right:150px;bottom:74px;height:8px;opacity:.5}
-.stage .curtain-l{left:0;top:0;width:128px;height:720px}
-.stage .curtain-r{right:0;top:0;width:128px;height:720px}
-.stage .rope{top:448px;width:80px;height:10px;border-radius:5px;box-shadow:0 3px 6px #0009}
-.stage .knob{top:446px;width:16px;height:16px;border-radius:50%}
-.stage .tassel{top:460px;width:12px;height:30px;border-radius:2px 2px 5px 5px}
-.stage .rope.l{left:0}.stage .knob.l{left:70px}.stage .tassel.l{left:72px}
-.stage .rope.r{right:0}.stage .knob.r{right:70px}.stage .tassel.r{right:72px}
+.stage .curtain-l{left:0;top:0;width:84px;height:720px;clip-path:polygon(0 0,100% 0,92% 30%,72% 60%,80% 100%,0 100%)}
+.stage .curtain-r{right:0;top:0;width:84px;height:720px;clip-path:polygon(100% 0,0 0,8% 30%,28% 60%,20% 100%,100% 100%)}
 .stage .pelmet{left:0;right:0;top:0;height:26px;z-index:8}
 .stage .swags{left:0;right:0;top:28px;height:22px;z-index:8}
 
@@ -143,56 +138,60 @@ body.host{height:100vh;overflow:hidden}
 .signwrap .ribbon{margin-top:-11px;position:relative;padding:6px 30px 5px;font-family:var(--display);font-size:14px;letter-spacing:.05em;color:var(--red-d);max-width:480px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-transform:uppercase}
 
 /* Manche */
-.g-badge{left:142px;top:52px;width:116px;height:116px;border-radius:50%;transform:rotate(-8deg);box-shadow:0 12px 26px #000C}
-.g-badge .lbl45{left:25px;top:25px;width:66px;height:66px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#5A0812;line-height:1}
+.g-badge{left:100px;top:52px;width:104px;height:104px;border-radius:50%;transform:rotate(-8deg);box-shadow:0 12px 26px #000C}
+.g-badge .lbl45{left:22px;top:22px;width:60px;height:60px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#5A0812;line-height:1}
 .lbl45 small{font-size:9px;font-weight:800;letter-spacing:.08em}
-.lbl45 b{font-family:var(--display);font-weight:400;font-size:26px;margin:1px 0}
-.g-sign{left:50%;top:52px;transform:translateX(-50%);z-index:2}
-.g-vu{right:128px;top:51px;width:210px;border-radius:16px;padding:8px 8px 6px;box-shadow:0 0 0 3px #C8901E,0 0 0 5px #4A2E06,0 14px 30px #000C}
-.g-vu .vuface{border-radius:10px;height:76px;box-shadow:inset 0 0 0 1px #8A5A10,inset 0 6px 14px #8A5A1066;overflow:hidden;transition:filter .3s}
-.g-vu.low .vuface{filter:sepia(.4) saturate(2.2) hue-rotate(-25deg)}
-.g-vu.low .led{animation:blink .5s steps(2) infinite}
-@keyframes blink{50%{opacity:.35}}
-.g-vu .row{display:flex;align-items:center;justify-content:space-between;padding:4px 4px 0}
-.g-vu .row span:first-child{font-size:12px;font-weight:800;letter-spacing:.22em;color:var(--brass)}
-.g-vu .row .led{font-size:24px;line-height:1.1}
-.g-vu .screw{width:5px;height:5px;border-radius:50%}
-#needle{transition:transform .25s linear}
+.lbl45 b{font-family:var(--display);font-weight:400;font-size:24px;margin:1px 0}
+.g-sign{left:50%;top:50px;transform:translateX(-50%);z-index:2}
+.g-sign .sign b{font-size:46px;padding:12px 42px 9px}
+.g-clock{right:96px;top:52px;width:214px;padding:10px 14px 10px;border-radius:16px;box-shadow:0 0 0 3px #C8901E,0 0 0 5px #4A2E06,0 14px 30px #000C;display:flex;flex-direction:column;align-items:center;gap:5px}
+.g-clock .cl-lbl{font-size:12px;font-weight:800;letter-spacing:.32em;color:var(--brass)}
+.g-clock .cl-digits{position:relative;background:#0A0306;border-radius:9px;padding:0 20px;box-shadow:inset 0 2px 8px #000,0 0 0 1px #FFC23D44;font-family:var(--display);font-size:66px;line-height:1.05}
+.g-clock .cl-digits .ghost{position:absolute;left:20px;top:0;color:#FF5A3612}
+.g-clock .cl-bar{display:flex;gap:3px;width:100%}
+.g-clock .cl-bar i{flex:1;height:8px;border-radius:2px;background:#2A1420;transition:background .3s,box-shadow .3s}
+.g-clock .cl-bar i.on{background:var(--gold);box-shadow:0 0 6px #FFC23DAA}
+.g-clock.low .cl-bar i.on{background:var(--led);box-shadow:0 0 6px var(--led)}
+.g-clock.low .led{animation:blink .5s steps(2) infinite}
+.g-clock .screw{width:5px;height:5px;border-radius:50%}
 
 /* Juke-box */
-.cab{left:128px;right:128px;top:184px;height:282px;padding:7px;border-radius:64px 64px 24px 24px;box-shadow:0 0 0 2px #4A2E06,0 28px 60px #000D,0 0 90px #FF3E8A30}
-.cabin{position:relative;height:100%;border-radius:58px 58px 18px 18px;display:flex;align-items:center;gap:30px;padding:0 44px 0 48px;box-shadow:inset 0 0 0 1px #FFE38E55,inset 0 10px 30px #000A}
+.cab{left:90px;right:90px;top:162px;height:346px;padding:7px;border-radius:70px 70px 24px 24px;box-shadow:0 0 0 2px #4A2E06,0 28px 60px #000D,0 0 90px #FFC23D30}
+.cabin{position:relative;height:100%;border-radius:64px 64px 18px 18px;display:flex;align-items:center;gap:36px;padding:0 50px 0 54px;box-shadow:inset 0 0 0 1px #FFE38E55,inset 0 10px 30px #000A}
 .cabin .glare{position:absolute;inset:0;border-radius:inherit}
-.cabin .tube{position:absolute;top:56px;bottom:22px;width:16px}
+.cabin .tube{position:absolute;top:66px;bottom:24px;width:16px}
 .cabin .tube.l{left:14px}.cabin .tube.r{right:14px}
-.rec{width:232px;height:232px;flex:none;position:relative}
+.rec{width:272px;height:272px;flex:none;position:relative}
 .rec .ring{inset:0;border-radius:50%;box-shadow:0 10px 24px #000A}
-.rec .win{inset:6px;border-radius:50%;box-shadow:inset 0 6px 20px #000C}
-.rec .disc{inset:20px;border-radius:50%;box-shadow:0 6px 16px #000C}
-.rec .dshine{inset:20px;border-radius:50%;pointer-events:none}
-.rec .lbl{left:61px;top:61px;width:70px;height:70px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;box-shadow:0 0 0 2px #FFC23D88;overflow:hidden;transition:all .6s cubic-bezier(.3,1.3,.5,1)}
-.rec .lbl small{font-size:8px;font-weight:800;letter-spacing:.2em;color:#FFD98A}
-.rec .lbl b{font-family:var(--display);font-weight:400;font-size:30px;color:var(--gold)}
+.rec .win{inset:7px;border-radius:50%;box-shadow:inset 0 6px 20px #000C}
+.rec .disc{inset:22px;border-radius:50%;box-shadow:0 6px 16px #000C}
+.rec .dshine{inset:22px;border-radius:50%;pointer-events:none}
+.rec .lbl{left:73px;top:73px;width:82px;height:82px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;line-height:1;box-shadow:0 0 0 2px #FFC23D88;overflow:hidden;transition:all .6s cubic-bezier(.3,1.3,.5,1)}
+.rec .lbl small{font-size:9px;font-weight:800;letter-spacing:.2em;color:#FFD98A}
+.rec .lbl b{font-family:var(--display);font-weight:400;font-size:36px;color:var(--gold)}
 .rec .lbl img{width:100%;height:100%;object-fit:cover}
-.rec.rv .lbl{left:32px;top:32px;width:128px;height:128px;box-shadow:0 0 0 3px var(--gold),0 0 30px #FFC23D88}
-.rec .pivot{right:2px;top:2px;width:30px;height:30px;border-radius:50%;box-shadow:0 4px 10px #000A}
-.rec .arm{right:13px;top:17px;width:8px;height:110px;transform-origin:50% 0;transform:rotate(26deg);transition:transform .8s cubic-bezier(.4,1.4,.5,1)}
-.rec .arm i{display:block;width:8px;height:92px;border-radius:4px;box-shadow:0 4px 8px #0009}
+.rec.rv .lbl{left:38px;top:38px;width:152px;height:152px;box-shadow:0 0 0 3px var(--gold),0 0 30px #FFC23D88}
+.rec .pivot{right:2px;top:2px;width:34px;height:34px;border-radius:50%;box-shadow:0 4px 10px #000A}
+.rec .arm{right:15px;top:19px;width:8px;height:130px;transform-origin:50% 0;transform:rotate(26deg);transition:transform .8s cubic-bezier(.4,1.4,.5,1)}
+.rec .arm i{display:block;width:8px;height:110px;border-radius:4px;box-shadow:0 4px 8px #0009}
 .rec .arm u{display:block;width:16px;height:18px;margin-left:-4px;border-radius:3px}
 .spin{animation:spin 1.8s linear infinite}
 @keyframes spin{to{transform:rotate(360deg)}}
 .paused .spin,.paused .tube,.paused .marquee{animation-play-state:paused}
 .paused .rec .arm{transform:rotate(6deg)}
-.board{flex:1;min-width:0;height:100%;display:flex;flex-direction:column;justify-content:center;gap:10px}
-.field .fhead{display:flex;align-items:center;gap:12px;height:26px;margin-bottom:8px}
-.field .fbody{height:92px;display:flex;align-items:center}
-.hintt{font-size:16px;font-weight:600;color:var(--sand)}
+.board{position:relative;flex:1;min-width:0;height:100%;display:flex;flex-direction:column;justify-content:center;gap:14px}
+.board .plaque{font-size:15px;padding:4px 12px}
+.board .chip{font-size:18px}
+.board .chip .av.xs{width:26px;height:26px}
+.field .fhead{display:flex;align-items:center;gap:12px;height:30px;margin-bottom:8px}
+.field .fbody{height:110px;display:flex;align-items:center}
+.hintt{font-size:18px;font-weight:600;color:var(--sand)}
 
 /* Pastille « Bravo » */
-#sticker{right:150px;top:192px;width:160px;height:160px;z-index:15;pointer-events:none;opacity:0;filter:drop-shadow(0 10px 12px #000A)}
+#sticker{right:122px;top:172px;width:160px;height:160px;z-index:15;pointer-events:none;opacity:0;filter:drop-shadow(0 10px 12px #000A)}
 #sticker svg{position:absolute;inset:0}
-#sticker .stk{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#062823;line-height:1;text-align:center;gap:2px}
-#sticker .stk .av{width:34px;height:34px;border:2px solid #06302A;font-size:15px;margin-bottom:2px}
+#sticker .stk{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;color:#5A0812;line-height:1;text-align:center;gap:2px}
+#sticker .stk .av{width:34px;height:34px;border:2px solid #7A0C1E;font-size:15px;margin-bottom:2px}
 #sticker small{font-family:var(--display);font-size:12px}
 #sticker b{font-family:var(--display);font-weight:400;font-size:20px;max-width:120px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 #sticker span{font-size:14px;font-weight:800;letter-spacing:.06em}
@@ -207,13 +206,13 @@ body.host{height:100vh;overflow:hidden}
 @keyframes splash{0%{opacity:0;transform:scale(.6)}20%{opacity:1;transform:scale(1)}75%{opacity:1;transform:scale(1.02)}100%{opacity:0;transform:scale(1.3)}}
 
 /* Pupitres */
-.lecs{left:128px;right:128px;bottom:20px;display:flex;justify-content:center;align-items:flex-end;gap:14px;z-index:3}
+.lecs{left:128px;right:128px;bottom:16px;display:flex;justify-content:center;align-items:flex-end;gap:14px;z-index:3}
 .lec{width:var(--lw);display:flex;flex-direction:column;align-items:center;position:relative}
 .lec .pool{position:absolute;left:50%;bottom:-26px;width:calc(var(--lw)*1.35);height:58px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(ellipse,var(--c),transparent 70%);opacity:.4;pointer-events:none}
 .lec.lead .pool{opacity:.7;height:70px}
-.lec .head{position:relative;z-index:0;margin-bottom:calc(var(--k)*-16px)}
-.lec .head .av{width:calc(var(--k)*62px);height:calc(var(--k)*62px);border-width:calc(var(--k)*3px);font-size:calc(var(--k)*26px);box-shadow:0 0 18px var(--c)}
-.lec.lead .head .av{width:calc(var(--k)*70px);height:calc(var(--k)*70px);box-shadow:0 0 0 2px var(--gold),0 0 30px var(--c)}
+.lec .head{position:relative;z-index:0;margin-bottom:calc(var(--k)*-14px)}
+.lec .head .av{width:calc(var(--k)*54px);height:calc(var(--k)*54px);border-width:calc(var(--k)*3px);font-size:calc(var(--k)*23px);box-shadow:0 0 18px var(--c)}
+.lec.lead .head .av{width:calc(var(--k)*62px);height:calc(var(--k)*62px);box-shadow:0 0 0 2px var(--gold),0 0 30px var(--c)}
 .lec.talk .head{animation:talk .35s ease-in-out 4 alternate}
 .lec .deskrow{position:relative;width:100%;z-index:1}
 .lec .dome{position:absolute;right:calc(var(--k)*12px);bottom:100%;width:calc(var(--k)*40px);height:calc(var(--k)*20px);border-radius:999px 999px 3px 3px;background:radial-gradient(circle at 38% 30%,#FFFFFFD0 0 6%,var(--c) 38%,var(--cd) 100%);box-shadow:0 0 18px var(--c)}
@@ -222,16 +221,16 @@ body.host{height:100vh;overflow:hidden}
 @keyframes talk{to{filter:brightness(1.6);transform:translateY(-2px)}}
 .lec .desk{width:100%;height:12px;border-radius:4px;box-shadow:0 4px 8px #0008;position:relative}
 .lec.lead .desk{box-shadow:0 4px 8px #0008,0 0 20px #FFC23D66}
-.lec .panel{position:relative;z-index:1;width:calc(100% - 8px);height:calc(var(--k)*92px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:calc(var(--k)*7px);clip-path:polygon(4% 0,96% 0,100% 100%,0 100%)}
-.lec.lead .panel{height:calc(var(--k)*104px)}
+.lec .panel{position:relative;z-index:1;width:calc(100% - 8px);height:calc(var(--k)*80px);display:flex;flex-direction:column;align-items:center;justify-content:center;gap:calc(var(--k)*6px);clip-path:polygon(4% 0,96% 0,100% 100%,0 100%)}
+.lec.lead .panel{height:calc(var(--k)*90px)}
 .lec .nm{font-size:calc(var(--k)*15px);padding:2px calc(var(--k)*9px);max-width:92%}
 .lec.lead .nm{box-shadow:0 0 0 2px var(--gold),0 2px 0 #00000066}
-.lec .ledbox{font-size:calc(var(--k)*30px);padding:0 calc(var(--k)*12px)}
+.lec .ledbox{font-size:calc(var(--k)*26px);padding:0 calc(var(--k)*12px)}
 .lec .ledbox .ghost{left:calc(var(--k)*12px)}
 .lec.lead .ledbox{box-shadow:inset 0 2px 6px #000,0 0 0 2px #FFC23D99}
 .lec.bump .ledbox{animation:bump .9s ease}
 @keyframes bump{30%{transform:scale(1.25);filter:brightness(1.6)}}
-.lec .crown{width:calc(var(--k)*46px);margin-bottom:calc(var(--k)*-6px);position:relative;z-index:1;filter:drop-shadow(0 0 8px #FFC23D99)}
+.lec .crown{width:calc(var(--k)*40px);margin-bottom:calc(var(--k)*-6px);position:relative;z-index:1;filter:drop-shadow(0 0 8px #FFC23D99)}
 .lec.off{filter:saturate(.25) brightness(.65)}
 .lec .bub{position:absolute;bottom:calc(100% + 8px);left:50%;transform:translateX(-50%);background:var(--paper);color:#1A0B10;border-radius:16px;padding:5px 12px;font-size:17px;font-weight:700;max-width:calc(var(--lw) + 8px);min-width:96px;box-shadow:0 8px 18px #0009;z-index:5;text-align:center}
 .lec .bub.in{animation:bubin .35s cubic-bezier(.2,1.5,.4,1)}
@@ -257,7 +256,7 @@ body.host{height:100vh;overflow:hidden}
 /* Salon */
 .l-sign{left:50%;top:44px;transform:translateX(-50%);z-index:2}
 .l-sign .sign b{font-size:46px;padding:12px 42px 9px}
-.ticket{left:128px;top:166px;width:322px;height:428px;background:linear-gradient(180deg,#FFFBEE,#F3DFAE);border-radius:18px;color:#3A1208;display:flex;flex-direction:column;align-items:center;padding:16px 18px 14px;gap:8px;box-shadow:0 0 0 2px #C8901E,0 24px 50px #000C;text-align:center}
+.ticket{left:96px;top:166px;width:322px;height:428px;background:linear-gradient(180deg,#FFFBEE,#F3DFAE);border-radius:18px;color:#3A1208;display:flex;flex-direction:column;align-items:center;padding:16px 18px 14px;gap:8px;box-shadow:0 0 0 2px #C8901E,0 24px 50px #000C;text-align:center}
 .ticket::before,.ticket::after{content:"";position:absolute;top:322px;width:26px;height:26px;border-radius:50%;background:#140822;box-shadow:inset 0 0 0 2px #C8901E}
 .ticket::before{left:-13px}.ticket::after{right:-13px}
 .tk-head{font-family:var(--display);font-size:17px;color:var(--red)}
@@ -275,7 +274,7 @@ body.host{height:100vh;overflow:hidden}
 .admline.muted{font-size:14px;color:#6A4A30;font-weight:600}
 .admline.off{opacity:.5}
 .mini-btn{font-family:var(--display);font-size:10px;padding:4px 8px;border-radius:6px;background:var(--red);color:var(--cream)}
-.prog{left:470px;right:128px;top:166px;height:428px;padding:7px;border-radius:40px 40px 22px 22px;box-shadow:0 0 0 2px #4A2E06,0 24px 50px #000C,0 0 80px #FF3E8A26}
+.prog{left:442px;right:96px;top:166px;height:428px;padding:7px;border-radius:40px 40px 22px 22px;box-shadow:0 0 0 2px #4A2E06,0 24px 50px #000C,0 0 80px #FFC23D26}
 .prog .cabin{flex-direction:column;align-items:stretch;justify-content:flex-start;gap:9px;padding:14px 44px 12px;border-radius:34px 34px 16px 16px}
 .prog .tube{top:40px;bottom:20px}
 .p-head{display:flex;align-items:center;gap:12px;min-height:26px;position:relative}
@@ -297,7 +296,7 @@ body.host{height:100vh;overflow:hidden}
 .p-foot .o2{gap:18px}
 .olbl{font-size:12px;font-weight:800;letter-spacing:.18em;color:var(--brass)}
 .p-foot .btn-launch{grid-row:1/3;grid-column:2;height:72px}
-.arrivals{left:128px;right:128px;bottom:14px;height:110px;display:flex;justify-content:center;align-items:flex-end;gap:12px;z-index:3}
+.arrivals{left:96px;right:96px;bottom:14px;height:110px;display:flex;justify-content:center;align-items:flex-end;gap:12px;z-index:3}
 .arrivals .empty{font-size:20px;font-weight:700;color:var(--sand);align-self:center;text-align:center}
 .arr{display:flex;flex-direction:column;align-items:center;gap:5px;position:relative}
 .arr .pool{position:absolute;left:50%;bottom:-20px;width:140%;height:44px;transform:translateX(-50%);border-radius:50%;background:radial-gradient(ellipse,var(--c),transparent 70%);opacity:.45}
@@ -510,7 +509,7 @@ function avHTML(p, cls){
     : `<span class="av ${cls}" ${style}>${esc(String(p.name || '?').trim().charAt(0).toUpperCase() || '?')}</span>`;
 }
 const signHTML = (text, style) => `<div class="sign marquee"><b class="signface"${style ? ` style="${style}"` : ''}>${esc(text)}</b></div>`;
-const STAR_SVG = '<svg viewBox="0 0 120 120" aria-hidden="true"><polygon points="118,60 104.4,71.9 110.2,89 92.5,92.5 89,110.2 71.9,104.4 60,118 48.1,104.4 31,110.2 27.5,92.5 9.8,89 15.6,71.9 2,60 15.6,48.1 9.8,31 27.5,27.5 31,9.8 48.1,15.6 60,2 71.9,15.6 89,9.8 92.5,27.5 110.2,31 104.4,48.1" fill="#2FD6BE" stroke="#06302A" stroke-width="3" stroke-linejoin="round"/><circle cx="60" cy="60" r="40" fill="none" stroke="#06302A" stroke-width="1.5" stroke-dasharray="3 4"/></svg>';
+const STAR_SVG = '<svg viewBox="0 0 120 120" aria-hidden="true"><polygon points="118,60 104.4,71.9 110.2,89 92.5,92.5 89,110.2 71.9,104.4 60,118 48.1,104.4 31,110.2 27.5,92.5 9.8,89 15.6,71.9 2,60 15.6,48.1 9.8,31 27.5,27.5 31,9.8 48.1,15.6 60,2 71.9,15.6 89,9.8 92.5,27.5 110.2,31 104.4,48.1" fill="#FFC23D" stroke="#7A0C1E" stroke-width="3" stroke-linejoin="round"/><circle cx="60" cy="60" r="40" fill="none" stroke="#7A0C1E" stroke-width="1.5" stroke-dasharray="3 4"/></svg>';
 const CROWN_SVG = '<svg class="crown" viewBox="0 0 36 20" aria-hidden="true"><path d="M2 18 L6 4 L12 12 L18 2 L24 12 L30 4 L34 18 Z" fill="#FFC23D" stroke="#7A4A00" stroke-width="1.5" stroke-linejoin="round"/><circle cx="18" cy="2.5" r="1.8" fill="#FFF0B8"/><circle cx="6" cy="4.5" r="1.5" fill="#FFF0B8"/><circle cx="30" cy="4.5" r="1.5" fill="#FFF0B8"/></svg>';
 const ICON = {
   play: '<svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 4.5l12 7.5-12 7.5z" fill="currentColor"/></svg>',
@@ -697,8 +696,6 @@ function hostMain(){
     <div class="a beam b1"></div><div class="a beam b2"></div><div class="a beam b3"></div>
     <div class="a floor"></div><div class="a floorline"></div><div class="a leds"></div>
     <div class="a curtain-l"></div><div class="a curtain-r"></div>
-    <div class="a rope l"></div><div class="a knob l goldlabel"></div><div class="a tassel l"></div>
-    <div class="a rope r"></div><div class="a knob r goldlabel"></div><div class="a tassel r"></div>
     <div class="a pelmet"></div><div class="a swags"></div>
     <div class="scene" id="scene"></div>
     <div class="a" id="sticker"></div><div class="a" id="splash"></div>
@@ -1113,8 +1110,8 @@ function hostMain(){
     if(by) chip = `<span class="chip ok">${avHTML(by, 'xs')}trouvé par ${esc(by.name)}</span>`;
     else if(rev) chip = '<span class="chip none">personne !</span>';
     else chip = `<span class="hintt">${H.hint ? `${st.words} mot${st.words > 1 ? 's' : ''} · ${st.letters} lettre${st.letters > 1 ? 's' : ''}` : 'à trouver'}</span>`;
-    const body = shown ? tilesHTML(text, {maxW: 650, maxH: 92, anim: H.anim[field]})
-      : (H.hint ? tilesHTML(maskOf(text), {maxW: 650, maxH: 92}) : mysHTML());
+    const body = shown ? tilesHTML(text, {maxW: 668, maxH: 108, max: 64, anim: H.anim[field]})
+      : (H.hint ? tilesHTML(maskOf(text), {maxW: 668, maxH: 108, max: 64}) : mysHTML());
     return `<div class="field"><div class="fhead"><span class="plaque">${field === 'artist' ? 'ARTISTE' : 'TITRE'}</span>${chip}</div><div class="fbody">${body}</div></div>`;
   }
   function recHTML(t, rev){
@@ -1167,25 +1164,15 @@ function hostMain(){
   function renderGame(){
     const t = H.cur; if(!t) return;
     if(H.screen !== 'game' || H.drawnRound !== H.idx){
-      H.drawnRound = H.idx; H.drawnRev = null;
+      H.drawnRound = H.idx; H.drawnRev = null; litDrawn = -1;
       show('game', `
         <div class="a g-badge grooves"><div class="a shine" style="inset:0;border-radius:50%"></div><div class="a lbl45 goldlabel"><small>MANCHE</small><b>${pad2(H.idx + 1)}</b><small>SUR ${H.tracks.length}</small></div></div>
         <div class="a g-sign signwrap">${signHTML('BLIND TEST')}<div class="ribbon">${esc(H.playlist ? H.playlist.title : 'Blind test')}</div></div>
-        <div class="a g-vu bezel" id="vu">
-          <div class="vuface"><svg width="194" height="76" viewBox="0 0 180 74" role="img" aria-label="Chrono">
-            <path d="M30 72 A60 60 0 0 1 132.43 29.57" fill="none" stroke="#2A1606" stroke-width="2"/>
-            <path d="M132.43 29.57 A60 60 0 0 1 150 72" fill="none" stroke="#C8102E" stroke-width="7"/>
-            <path d="M30 72L40 72M38.04 42L46.7 47M60 20.04L65 28.7M90 12L90 22M120 20.04L115 28.7M141.96 42L133.3 47M150 72L140 72" stroke="#2A1606" stroke-width="2.2"/>
-            <text x="24" y="50" font-size="9" font-weight="700" fill="#3A2208" text-anchor="middle" font-family="Barlow Condensed, sans-serif">−20</text>
-            <text x="125" y="12" font-size="9" font-weight="700" fill="#3A2208" text-anchor="middle" font-family="Barlow Condensed, sans-serif">0</text>
-            <text x="156" y="40" font-size="9" font-weight="700" fill="#C8102E" text-anchor="middle" font-family="Barlow Condensed, sans-serif">+3</text>
-            <text x="90" y="54" font-size="13" font-weight="800" fill="#3A2208" text-anchor="middle" font-family="Barlow Condensed, sans-serif" letter-spacing="1">VU</text>
-            <g id="needle"><path d="M90 72L32 72" stroke="#140A04" stroke-width="2" stroke-linecap="round"/></g>
-            <circle cx="90" cy="74" r="9" fill="#140A04"/>
-          </svg></div>
-          <div class="row"><span>CHRONO</span><span class="led" id="secs">0:30</span></div>
-          <div class="a screw goldlabel" style="left:4px;top:4px"></div><div class="a screw goldlabel" style="right:4px;top:4px"></div>
-          <div class="a screw goldlabel" style="left:4px;bottom:4px"></div><div class="a screw goldlabel" style="right:4px;bottom:4px"></div>
+        <div class="a g-clock bezel" id="clock">
+          <span class="cl-digits"><span class="ghost">88</span><span class="led" id="secs">30</span></span>
+          <div class="cl-bar" id="clbar">${'<i class="on"></i>'.repeat(15)}</div>
+          <div class="a screw goldlabel" style="left:5px;top:5px"></div><div class="a screw goldlabel" style="right:5px;top:5px"></div>
+          <div class="a screw goldlabel" style="left:5px;bottom:5px"></div><div class="a screw goldlabel" style="right:5px;bottom:5px"></div>
         </div>
         <div class="a cab cabinet"><div class="cabin cabinner">
           <div class="glare"></div><div class="tube l"></div><div class="tube r"></div>
@@ -1227,20 +1214,21 @@ function hostMain(){
     sendAdmin();
   }
 
-  /* ---- Chrono (vu-mètre) ---- */
+  /* ---- Chrono ---- */
+  let litDrawn = -1;
   (function tick(){
     if(H.screen === 'game'){
       const d = H.audio.duration || 30, ct = H.audio.currentTime || 0;
-      const frac = H.phase === 'playing' ? Math.min(1, ct / d) : 1;
-      const nd = $('#needle'); if(nd) nd.setAttribute('transform', `rotate(${(frac * 180).toFixed(1)} 90 72)`);
       const s = $('#secs');
       if(s){
         const left = H.phase === 'playing' ? Math.max(0, Math.ceil(d - ct)) : 0;
-        const txt = fmt(left);
-        if(s.textContent !== txt) s.textContent = txt;
-        const vu = $('#vu'); if(vu) vu.classList.toggle('low', H.phase === 'playing' && left <= 5 && !H.audio.paused);
+        const txt = left < 100 ? pad2(left) : fmt(left);
+        if(s.textContent !== txt){ s.textContent = txt; s.previousElementSibling.textContent = txt.replace(/\d/g, '8'); }
+        const lit = H.phase === 'playing' ? Math.ceil(Math.max(0, d - ct) / d * 15) : 0;
+        if(lit !== litDrawn){ litDrawn = lit; document.querySelectorAll('#clbar i').forEach((el, i) => el.classList.toggle('on', i < lit)); }
+        const c = $('#clock'); if(c) c.classList.toggle('low', H.phase === 'playing' && left <= 5 && !H.audio.paused);
       }
-    }
+    } else litDrawn = -1;
     requestAnimationFrame(tick);
   })();
 
