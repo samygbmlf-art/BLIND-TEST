@@ -465,6 +465,55 @@ body.ph{background:#0C0414;position:relative;min-height:100dvh}
 .aplayers button{width:34px;height:34px;border-radius:9px;background:#2A1430;border:1.5px solid #C8901E88;font-family:var(--display);font-size:16px}
 .aplayers .off{opacity:.45}
 .vh{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+
+/* =================== POUVOIRS =================== */
+#pwban{left:50%;top:118px;z-index:16;display:flex;align-items:center;gap:14px;padding:10px 26px 10px 14px;border-radius:16px;background:linear-gradient(#FFFBEE,#EFD69A);color:#3A1208;box-shadow:0 0 0 3px var(--gold-d),0 0 0 6px #7A0C1E,0 20px 40px #000C;opacity:0;pointer-events:none;transform:translateX(-50%);max-width:960px}
+#pwban.bad{background:linear-gradient(#FFE0E6,#FFB3C1);box-shadow:0 0 0 3px var(--red),0 0 0 6px #4E0612,0 20px 40px #000C}
+#pwban .pe{font-size:52px;line-height:1;flex:none}
+#pwban .av{width:54px;height:54px;font-size:22px;border-width:3px}
+#pwban b{display:block;font-family:var(--display);font-weight:400;font-size:26px;line-height:1.1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:760px}
+#pwban span{display:block;font-size:21px;font-weight:700;color:#8A2A1A;margin-top:3px;white-space:nowrap}
+#pwban.show{animation:pwban 2.8s cubic-bezier(.2,1.3,.4,1) both}
+@keyframes pwban{0%{opacity:0;transform:translate(-50%,-40px) scale(.7) rotate(-3deg)}12%{opacity:1;transform:translate(-50%,0) scale(1.05) rotate(1deg)}20%{transform:translate(-50%,0) scale(1) rotate(0)}85%{opacity:1;transform:translate(-50%,0)}100%{opacity:0;transform:translate(-50%,-10px)}}
+.lec .pfx{position:absolute;top:calc(var(--k)*-6px);left:0;display:flex;flex-wrap:wrap;gap:3px;z-index:4;max-width:100%}
+.lec .pfx i{font-style:normal;font-size:calc(var(--k)*16px);font-weight:800;background:#1A0A22;border:1.5px solid var(--gold-d);border-radius:99px;padding:1px 7px;color:var(--cream);white-space:nowrap;box-shadow:0 3px 8px #000A}
+.lec .pfx i.hot{border-color:var(--led);animation:blink .6s steps(2) infinite}
+.lec.frozen .head .av{filter:hue-rotate(170deg) saturate(.4) brightness(1.35);box-shadow:0 0 0 3px #BFE9FF,0 0 26px #7CC8F2}
+.shake{animation:shake .6s}
+@keyframes shake{20%{transform:translate(-14px,6px)}40%{transform:translate(12px,-8px)}60%{transform:translate(-8px,4px)}80%{transform:translate(6px,-3px)}}
+.balloon{position:fixed;bottom:-100px;z-index:25;pointer-events:none;font-size:clamp(34px,4.5vw,72px);line-height:1;animation:float 4.8s ease-in forwards}
+@keyframes float{to{transform:translate(var(--dx),-125vh) rotate(var(--r))}}
+/* téléphone */
+.powers{display:flex;flex-direction:column;gap:8px;align-items:center}
+.powers:empty{display:none}
+.pw-row{display:flex;flex-wrap:wrap;gap:8px;justify-content:center}
+.pw{display:flex;flex-direction:column;align-items:center;gap:3px;min-width:88px;padding:8px 10px 6px;border-radius:10px;background:linear-gradient(#FFFBEE,#EFD69A);color:#3A1208;font-family:var(--display);font-size:11px;box-shadow:0 3px 0 #8A5A10,0 6px 14px #000A}
+.pw i{font-style:normal;font-size:28px;line-height:1}
+.pw:active{transform:translateY(2px);box-shadow:0 1px 0 #8A5A10}
+.pw.armed,.pw.armed:disabled{background:#1A0A22;color:var(--gold);border:1.5px dashed var(--gold);box-shadow:none;cursor:default;opacity:1}
+.pnote{font-size:15px;font-weight:700;text-align:center;border-radius:10px;padding:6px 8px;background:#2A1020;border:1.5px solid #FF4B6E88;color:#FFC0CC}
+.pnote.bet{background:#0E3C36;border-color:var(--teal);color:#CFFAF2}
+.sheet{position:fixed;inset:0;z-index:50;background:#08030DCC;display:flex;align-items:flex-end;justify-content:center}
+.sheet>div{width:100%;max-width:480px;max-height:85dvh;overflow:auto;background:linear-gradient(#1C0A24,#12061A);border:2px solid var(--gold-d);border-bottom:0;border-radius:20px 20px 0 0;padding:18px 16px calc(22px + env(safe-area-inset-bottom));display:flex;flex-direction:column;gap:10px;animation:sheetup .25s ease}
+@keyframes sheetup{from{transform:translateY(60px);opacity:0}}
+.sheet h3{font-family:var(--display);font-weight:400;color:var(--gold);text-align:center;font-size:20px}
+.sheet p{font-size:16px;color:var(--sand);text-align:center;line-height:1.3}
+.sheet .tg{display:flex;align-items:center;gap:12px;background:#1A0A22;border:1.5px solid #C8901E66;border-radius:12px;padding:8px 10px;font-size:19px;font-weight:700;text-align:left;color:var(--cream)}
+.sheet .tg .av{width:42px;height:42px;font-size:17px}
+.sheet .bets{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.sheet .bets .btn-gold{min-height:62px;font-size:26px}
+.sheet .go{min-height:56px;font-size:18px}
+.ice{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;color:#0B2540;font-family:var(--display);font-size:30px;background:radial-gradient(circle at 30% 20%,#FFFFFFF2,#CFEFFFF2 40%,#86CDF5F2);user-select:none;-webkit-user-select:none;touch-action:manipulation}
+.ice b{font-size:76px;font-weight:400;line-height:1}
+.ice small{font-family:var(--body);font-weight:700;font-size:19px}
+.ice .bar{width:70%;height:12px;border-radius:99px;background:#FFFFFF90;overflow:hidden;box-shadow:inset 0 0 0 1.5px #0B254055}
+.ice .bar i{display:block;height:100%;background:#0B2540;transition:width .1s}
+.ice.hit{animation:icehit .12s}
+@keyframes icehit{50%{transform:scale(1.015) rotate(.4deg)}}
+.dome-btn.flee{position:fixed;z-index:45;width:150px;transition:left .2s ease,top .2s ease}
+.ptoast{position:fixed;left:50%;top:12px;transform:translate(-50%,-20px);z-index:55;width:max-content;max-width:92vw;background:linear-gradient(#FFFBEE,#EFD69A);color:#3A1208;border-radius:12px;padding:9px 16px;font-size:17px;font-weight:700;text-align:center;box-shadow:0 0 0 2px var(--gold-d),0 10px 26px #000A;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s}
+.ptoast.show{opacity:1;transform:translate(-50%,0)}
+.ptoast.bad{background:linear-gradient(#FFE0E6,#FFB3C1);box-shadow:0 0 0 2px var(--red),0 10px 26px #000A}
 @media (prefers-reduced-motion:reduce){.marquee,.tube,.spin,.award.a1 .shine{animation:none}}
 </style>
 </head>
@@ -489,6 +538,17 @@ const STARS = [
   'Édith Piaf','Dalida','Serge Gainsbourg','Céline Dion','Beyoncé','Lady Gaga','Louis de Funès','Jean-Paul Belmondo',
   'Coluche','Charlie Chaplin','Albert Einstein','Napoléon Ier','Zinédine Zidane','Kylian Mbappé','La Joconde'
 ];
+// Pouvoirs : 3 tirés au hasard par joueur en début de partie, utilisables une fois
+const POWERS = {
+  gel:      {e: '❄️', n: 'Gel',           target: true,  when: 'playing', d: 'Bloque le micro d’un joueur pendant 10 secondes.'},
+  fuyant:   {e: '🏃', n: 'Bouton fuyant', target: true,  when: 'playing', d: 'Son bouton micro s’enfuit dès qu’il le touche, pendant 15 secondes.'},
+  helium:   {e: '🎈', n: 'Hélium',        target: false, when: 'playing', d: 'La chanson passe en voix de Chipmunk… ou d’outre-tombe. Pour tout le monde.'},
+  parasite: {e: '🦠', n: 'Parasite',      target: true,  when: 'any',     d: 'En secret : le prochain point qu’il gagne sera pour toi.'},
+  bombe:    {e: '💣', n: 'Bombe',         target: true,  when: 'any',     d: 'Explose dans 3 manches : −2 points pour celui qui la tient. Marquer un point la refile au voisin.'},
+  miroir:   {e: '🪞', n: 'Miroir',        target: false, when: 'any',     d: 'Le prochain pouvoir lancé contre toi se retourne contre son auteur.'},
+  pari:     {e: '🎲', n: 'Pari',          target: false, when: 'bet',     d: 'Mise 1 à 3 points : tu les gagnes si tu trouves l’artiste, tu les perds sinon.'}
+};
+const POWER_IDS = Object.keys(POWERS);
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function store(k, v){ try{ if(v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); }catch(e){ return null; } }
 function storeJSON(k, v){ try{ if(v === undefined) return JSON.parse(localStorage.getItem(k) || 'null'); localStorage.setItem(k, JSON.stringify(v)); }catch(e){ return null; } }
@@ -712,7 +772,8 @@ function hostMain(){
     q: '', results: null, playlist: null, loading: '', n: 15, auto: true, order: store('bt-order') || 'random', hint: store('bt-hint') !== '0',
     played: new Set(storeJSON('bt-played') || []),
     audio: new Audio(), ctx: null, unlocked: false, nextTO: 0, revealTO: 0, sayTO: 0, roundToken: 0,
-    screen: '', drawnRound: -1, drawnRev: null, anim: {artist: false, title: false}, bump: null
+    screen: '', drawnRound: -1, drawnRev: null, anim: {artist: false, title: false}, bump: null,
+    powersOn: store('bt-powers') !== '0', bomb: null, parasite: new Map(), bets: new Map(), helium: null, banQ: [], banBusy: false
   };
   H.audio.preload = 'auto';
   H.audio.addEventListener('ended', () => { if(H.phase === 'playing') reveal(); });
@@ -733,7 +794,7 @@ function hostMain(){
     <div class="a beam b1"></div><div class="a beam b2"></div><div class="a beam b3"></div>
     <div class="a floor"></div><div class="a floorline"></div><div class="a leds"></div>
     <div class="scene" id="scene"></div>
-    <div class="a" id="sticker"></div><div class="a" id="splash"></div>
+    <div class="a" id="sticker"></div><div class="a" id="splash"></div><div class="a" id="pwban"></div>
   </div></div>`;
   const stage = $('#stage'), scene = $('#scene');
   const fit = () => stage.style.setProperty('--s', Math.min(innerWidth / 1280, innerHeight / 720));
@@ -754,6 +815,135 @@ function hostMain(){
     const el = $('#splash');
     el.innerHTML = `<div class="signwrap">${signHTML('MANCHE ' + n, 92, Math.round(('MANCHE ' + n).length * 72 + 110), 140, 22)}<div class="ribbon">SUR ${total}</div></div>`;
     lights(el); el.classList.remove('show'); void el.offsetWidth; el.classList.add('show');
+  }
+
+  /* ---- Pouvoirs ---- */
+  function announce(emoji, p, titleTxt, sub, bad, quiet){
+    H.banQ.push({emoji, p, titleTxt, sub, bad}); if(!H.banBusy) nextBan();
+    if(!quiet) H.players.forEach(x => newsTo(x, `${emoji} ${titleTxt}${sub ? ' · ' + sub : ''}`, bad));
+  }
+  function nextBan(){
+    const b = H.banQ.shift(); const el = $('#pwban');
+    if(!b || !el){ H.banBusy = false; return; }
+    H.banBusy = true;
+    el.className = 'a' + (b.bad ? ' bad' : '');
+    el.innerHTML = `<span class="pe">${b.emoji}</span>${b.p ? avHTML(b.p) : ''}<div><b>${esc(b.titleTxt)}</b>${b.sub ? `<span>${esc(b.sub)}</span>` : ''}</div>`;
+    void el.offsetWidth; el.classList.add('show');
+    setTimeout(nextBan, H.banQ.length > 2 ? 1600 : 2900); // s'il y a la queue, on accélère
+  }
+  function newsTo(p, text, bad){ if(p && p.conn && p.conn.open) try{ p.conn.send({t: 'news', text, bad: !!bad}); }catch(e){} }
+  function fxTo(p, o){ if(p && p.conn && p.conn.open) try{ p.conn.send(Object.assign({t: 'fx'}, o)); }catch(e){} }
+  function setPitch(on){ try{ H.audio.preservesPitch = on; H.audio.mozPreservesPitch = on; H.audio.webkitPreservesPitch = on; }catch(e){} }
+  function balloons(e){
+    for(let i = 0; i < 16; i++){
+      const b = document.createElement('div'); b.className = 'balloon'; b.textContent = e;
+      b.style.left = (Math.random() * 95) + 'vw';
+      b.style.setProperty('--dx', ((Math.random() - .5) * 30) + 'vw');
+      b.style.setProperty('--r', ((Math.random() - .5) * 60) + 'deg');
+      b.style.animationDelay = (Math.random() * 1.4) + 's';
+      document.body.appendChild(b); setTimeout(() => b.remove(), 7000);
+    }
+  }
+  function boom(){
+    scene.classList.remove('shake'); void scene.offsetWidth; scene.classList.add('shake');
+    fx.burst(160, .5, .55); ding([190, 130, 80], 'sawtooth');
+  }
+  function neighbor(p){
+    const list = [...H.players.values()].filter(x => x.plays);
+    const i = list.indexOf(p); if(list.length < 2 || i < 0) return null;
+    return list[(i + 1) % list.length];
+  }
+  const dealPowers = () => shuffle(POWER_IDS).slice(0, 3);
+  function usePower(p, d){
+    const id = String(d.id || ''); const def = POWERS[id];
+    const no = msg => newsTo(p, '⛔ ' + msg, true);
+    if(!def) return;
+    if(!H.powersOn) return no('Les pouvoirs sont désactivés');
+    if(H.phase !== 'playing' && H.phase !== 'reveal') return no('Attends que la partie soit lancée');
+    const i = (p.powers || []).indexOf(id); if(i < 0) return no('Tu n’as plus ce pouvoir');
+    if(def.when === 'playing' && H.phase !== 'playing') return no('Seulement pendant une chanson');
+    let target = null;
+    if(def.target){ target = H.players.get(String(d.target || '')); if(!target || target === p || !target.plays) return no('Choisis une cible'); }
+    if(id === 'helium' && H.helium) return no('L’hélium est déjà lâché !');
+    if(id === 'bombe' && H.bomb) return no('Une bombe est déjà en jeu');
+    if(id === 'miroir' && p.mirror) return no('Ton miroir est déjà en place');
+    let amt = 0, round = 0;
+    if(id === 'pari'){
+      amt = Math.max(1, Math.min(3, Math.floor(+d.bet || 1)));
+      if(H.bets.has(p.key)) return no('Tu as déjà un pari en cours');
+      if(p.score < amt) return no('Pas assez de points pour miser ça');
+      if(H.phase === 'reveal'){ if(H.idx + 1 >= H.tracks.length) return no('C’était la dernière chanson !'); round = H.idx + 1; }
+      else { if(H.found.artist || (H.audio.currentTime || 0) > 8) return no('Trop tard pour parier sur cette chanson'); round = H.idx; }
+    }
+    p.powers.splice(i, 1);
+    let src = p;
+    if(target && target.mirror){
+      target.mirror = false;
+      announce('🪞', target, `${target.name} avait un miroir !`, `${def.n} renvoyé à ${p.name}`);
+      src = target; target = p;
+    }
+    switch(id){
+      case 'gel':
+        target.frozenUntil = Date.now() + 10000;
+        fxTo(target, {kind: 'freeze', ms: 10000});
+        announce('❄️', src, `${src.name} gèle ${target.name} !`, 'Micro bloqué 10 secondes');
+        ding([1500, 1150, 900], 'sine');
+        setTimeout(() => { if(H.screen === 'game') updateLecterns(); }, 10300);
+        break;
+      case 'fuyant':
+        target.fleeUntil = Date.now() + 15000;
+        fxTo(target, {kind: 'flee', ms: 15000});
+        announce('🏃', src, `${src.name} fait fuir le micro de ${target.name}`, 'Bon courage pour l’attraper…');
+        ding([700, 900, 700, 900], 'square');
+        setTimeout(() => { if(H.screen === 'game') updateLecterns(); }, 15300);
+        break;
+      case 'helium':
+        H.helium = Math.random() < .5 ? 1.6 : .62;
+        setPitch(false); H.audio.playbackRate = H.helium;
+        balloons(H.helium > 1 ? '🎈' : '👻');
+        announce('🎈', src, `${src.name} lâche l’hélium !`, H.helium > 1 ? 'Voix de Chipmunk activée' : 'Voix d’outre-tombe activée');
+        break;
+      case 'parasite':
+        H.parasite.set(target.key, {owner: src.key, until: H.idx + 3});
+        newsTo(src, `🦠 Parasite posé sur ${target.name}. Chut…`);
+        announce('🦠', null, 'Un parasite rôde…', 'Quelqu’un va se faire voler un point', false, true);
+        break;
+      case 'bombe':
+        H.bomb = {key: target.key, at: H.idx + 3};
+        announce('💣', src, `${src.name} refile la bombe à ${target.name} !`, 'Elle explose dans 3 manches : −2 points');
+        ding([220, 280], 'square');
+        break;
+      case 'miroir':
+        p.mirror = true;
+        newsTo(p, '🪞 Miroir en place : le prochain pouvoir lancé contre toi se retournera.');
+        announce('🪞', null, 'Un miroir a été posé…', 'Attention à qui vous visez', false, true);
+        break;
+      case 'pari':
+        H.bets.set(p.key, {amt, round});
+        announce('🎲', p, `${p.name} parie ${amt} point${amt > 1 ? 's' : ''}`, round === H.idx ? 'sur l’artiste de cette chanson' : 'sur l’artiste de la prochaine chanson');
+        break;
+    }
+    if(H.screen === 'game') updateLecterns();
+    broadcast();
+  }
+  function resolveRound(){
+    for(const [k, b] of [...H.bets]){
+      if(b.round !== H.idx) continue;
+      H.bets.delete(k); const p = H.players.get(k); if(!p) continue;
+      if(H.foundKey.artist === k){ p.score += b.amt; H.bump = k; announce('🎲', p, `${p.name} gagne son pari !`, `+${b.amt} point${b.amt > 1 ? 's' : ''}`); }
+      else { p.score = Math.max(0, p.score - b.amt); announce('🎲', p, `${p.name} perd son pari…`, `−${b.amt} point${b.amt > 1 ? 's' : ''}`, true); }
+    }
+    if(H.bomb && H.idx >= H.bomb.at) explode('');
+    for(const [k, par] of [...H.parasite]){
+      if(H.idx >= par.until){ H.parasite.delete(k); newsTo(H.players.get(par.owner), '🦠 Ton parasite est mort de faim…'); }
+    }
+  }
+  function explode(sub){
+    const h = H.players.get(H.bomb.key); H.bomb = null;
+    if(!h) return;
+    h.score = Math.max(0, h.score - 2);
+    announce('💥', h, `BOUM ! La bombe explose sur ${h.name}`, sub || '−2 points', true);
+    boom();
   }
 
   /* ---- Déblocage du son (les navigateurs exigent un premier geste sur l'appareil) ---- */
@@ -810,9 +1000,15 @@ function hostMain(){
       } else if(p.admin){ p.admin = false; p.plays = true; H.adminKey = null; }
       if(p.conn && p.conn !== c) try{ p.conn.close(); }catch(e){}
       p.conn = c; c.pkey = k;
+      if(H.phase !== 'lobby' && H.phase !== 'end' && H.powersOn && p.plays && !p.powers) p.powers = dealPowers();
       refresh(); sendState(p); sendAdmin();
     } else if(d.t === 'answer'){
       const p = H.players.get(c.pkey); if(p && p.plays) onAnswer(p, d);
+    } else if(d.t === 'power'){
+      const p = H.players.get(c.pkey); if(p && p.plays) usePower(p, d);
+    } else if(d.t === 'thaw'){
+      const p = H.players.get(c.pkey);
+      if(p && p.frozenUntil > Date.now()){ p.frozenUntil = 0; announce('🔨', p, `${p.name} brise la glace !`, 'à force de tapoter', false, true); if(H.screen === 'game') updateLecterns(); broadcast(); }
     } else if(d.t === 'cmd'){
       if(c.pkey && c.pkey === H.adminKey) adminCmd(d);
     }
@@ -837,7 +1033,11 @@ function hostMain(){
         admin: !!p.admin, plays: !!p.plays, hint: H.hint,
         found: {artist: H.found.artist, title: H.found.title},
         board: boardState(), left: timeLeft(), paused: H.audio.paused,
-        reveal: showRev ? {artist: t.artist.name, title: fieldText(t, 'title'), cover: t.album && t.album.cover_medium} : null
+        reveal: showRev ? {artist: t.artist.name, title: fieldText(t, 'title'), cover: t.album && t.album.cover_medium} : null,
+        powersOn: H.powersOn, powers: p.powers || [], mirror: !!p.mirror,
+        others: r.filter(x => x !== p).map(x => ({key: x.key, name: x.name, avatar: x.avatar, color: x.color})),
+        bomb: H.bomb ? {name: (H.players.get(H.bomb.key) || {}).name || '?', left: Math.max(1, H.bomb.at - H.idx), mine: H.bomb.key === p.key} : null,
+        bet: H.bets.has(p.key) ? {amt: H.bets.get(p.key).amt, next: H.bets.get(p.key).round > H.idx} : null
       });
     }catch(e){}
   }
@@ -847,7 +1047,7 @@ function hostMain(){
   function sendAdmin(){
     const p = adminP();
     if(!p || !p.conn || !p.conn.open) return;
-    const a = {t: 'admin', phase: H.phase, unlocked: H.unlocked, auto: H.auto, n: H.n, order: H.order, hint: H.hint};
+    const a = {t: 'admin', phase: H.phase, unlocked: H.unlocked, auto: H.auto, n: H.n, order: H.order, hint: H.hint, powersOn: H.powersOn};
     if(H.phase === 'lobby'){
       a.results = Array.isArray(H.results)
         ? H.results.slice(0, 30).map(r => ({id: r.id, title: r.title, nb: r.nb_tracks, pic: r.picture_small || r.picture_medium}))
@@ -873,6 +1073,7 @@ function hostMain(){
         if(d.n) H.n = Math.max(5, Math.min(50, +d.n || 15));
         if('auto' in d) H.auto = !!d.auto;
         if('hint' in d){ H.hint = !!d.hint; store('bt-hint', H.hint ? '1' : '0'); }
+        if('powers' in d){ H.powersOn = !!d.powers; store('bt-powers', H.powersOn ? '1' : '0'); }
         if(d.order === 'random' || d.order === 'playlist'){ H.order = d.order; store('bt-order', H.order); }
         if(H.phase === 'lobby') updateOpts();
         sendAdmin(); break;
@@ -959,7 +1160,8 @@ function hostMain(){
       const old = shuffle(all.filter(t => H.played.has(t.id)));
       H.tracks = fresh.concat(old).slice(0, H.n);
     }
-    H.players.forEach(p => { p.score = 0; p.last = ''; p.say = null; });
+    H.players.forEach(p => { p.score = 0; p.last = ''; p.say = null; p.powers = H.powersOn && p.plays ? dealPowers() : []; p.mirror = false; p.frozenUntil = 0; p.fleeUntil = 0; });
+    H.bomb = null; H.parasite = new Map(); H.bets = new Map(); H.helium = null;
     H.idx = -1; H.cur = null; H.drawnRound = -1;
     startRound();
   }
@@ -976,6 +1178,17 @@ function hostMain(){
     H.cur = t; H.found = {artist: null, title: null}; H.foundKey = {artist: null, title: null}; H.feed = []; H.phase = 'playing';
     H.players.forEach(p => { p.say = null; });
     H.audio.src = t.preview; H.audio.currentTime = 0;
+    H.helium = null; setPitch(true); H.audio.playbackRate = 1;
+    if(H.powersOn && H.idx > 0 && H.idx % 5 === 0){ // bonus pour le dernier du classement
+      const r = ranked();
+      if(r.length > 1){
+        const min = r[r.length - 1].score; const lasts = r.filter(x => x.score === min);
+        const lucky = lasts[Math.floor(Math.random() * lasts.length)];
+        const pid = POWER_IDS[Math.floor(Math.random() * POWER_IDS.length)];
+        lucky.powers = (lucky.powers || []).concat(pid);
+        setTimeout(() => announce('🎁', lucky, `Bonus pour ${lucky.name} !`, `${POWERS[pid].e} ${POWERS[pid].n} · courage, dernier !`), 1700);
+      }
+    }
     renderGame(); broadcast();
     splash(H.idx + 1, H.tracks.length);
     ding([392, 523], 'sine');
@@ -985,6 +1198,7 @@ function hostMain(){
     if(H.phase !== 'playing') return;
     clearTimeout(H.revealTO);
     H.anim = {artist: !H.found.artist, title: !H.found.title};
+    resolveRound();
     H.phase = 'reveal'; renderGame(); broadcast();
     if(H.auto) H.nextTO = setTimeout(next, 8000);
   }
@@ -995,15 +1209,27 @@ function hostMain(){
   }
   function endGame(){
     clearTimeout(H.nextTO); clearTimeout(H.revealTO); H.roundToken++;
-    H.audio.pause(); H.phase = 'end'; renderEnd(); broadcast(); ding([523, 659, 784, 1046]);
+    H.audio.pause(); H.audio.playbackRate = 1;
+    if(H.bomb) explode('Elle a explosé à la fin du show !');
+    H.bets = new Map(); H.parasite = new Map();
+    H.phase = 'end'; renderEnd(); broadcast(); ding([523, 659, 784, 1046]);
     setTimeout(() => fx.rain(4500), 900);
   }
-  function backToLobby(){ H.phase = 'lobby'; H.cur = null; H.players.forEach(p => { p.score = 0; p.say = null; }); renderLobby(); broadcast(); }
+  function backToLobby(){ H.phase = 'lobby'; H.cur = null; H.bomb = null; H.players.forEach(p => { p.score = 0; p.say = null; p.powers = null; p.mirror = false; }); renderLobby(); broadcast(); }
   function award(p, field){
     if(H.phase !== 'playing' || H.found[field] || !p) return false;
-    H.found[field] = p.name; H.foundKey[field] = p.key; p.score++;
-    H.anim[field] = true; H.bump = p.key;
-    ding(); toast(p, field); fx.burst(70, .7, .3);
+    H.found[field] = p.name; H.foundKey[field] = p.key;
+    let gain = p; const par = H.parasite.get(p.key);
+    if(par && H.players.get(par.owner)){ H.parasite.delete(p.key); gain = H.players.get(par.owner); }
+    gain.score++;
+    H.anim[field] = true; H.bump = gain.key;
+    ding(); fx.burst(70, .7, .3);
+    if(gain !== p) announce('🦠', gain, `${gain.name} parasitait ${p.name} !`, 'et lui vole son point', true);
+    else toast(p, field);
+    if(H.bomb && H.bomb.key === p.key){
+      const nb = neighbor(p);
+      if(nb){ H.bomb.key = nb.key; announce('💣', p, `${p.name} se débarrasse de la bombe`, `elle passe à ${nb.name}`); }
+    }
     if(H.found.artist && H.found.title) H.revealTO = setTimeout(reveal, 1800);
     return true;
   }
@@ -1011,6 +1237,10 @@ function hostMain(){
     const text = String(d.text || '').slice(0, 120);
     if(H.phase === 'lobby'){ if(d.final){ p.last = text; refresh(); } return; }
     if(H.phase !== 'playing' || !H.cur) return;
+    if(p.frozenUntil && p.frozenUntil > Date.now()){
+      if(d.final){ p.say = {text, got: [], t: Date.now(), round: H.idx, final: true, frozen: true}; updateLecterns(); }
+      return;
+    }
     const texts = [text, ...(Array.isArray(d.alts) ? d.alts : [])].map(s => String(s).slice(0, 120)).filter(Boolean);
     const got = [];
     for(const field of ['artist', 'title']){
@@ -1085,7 +1315,7 @@ function hostMain(){
   function optsHTML(){
     return `<div class="o1"><span class="olbl">CHANSONS</span><div class="seg">${[10, 15, 20, 30].map(n => `<button type="button" class="${n === H.n ? 'on' : ''}" data-act="setn" data-n="${n}">${n}</button>`).join('')}</div>
       <span class="olbl">ORDRE</span><div class="seg"><button type="button" class="${H.order === 'random' ? 'on' : ''}" data-act="setord" data-o="random">HASARD</button><button type="button" class="${H.order === 'playlist' ? 'on' : ''}" data-act="setord" data-o="playlist">PLAYLIST</button></div></div>
-      <div class="o2"><label class="sw"><input type="checkbox" id="auto" ${H.auto ? 'checked' : ''}>Enchaîner auto</label><label class="sw" title="Affiche le nombre de mots et de lettres à trouver"><input type="checkbox" id="hint" ${H.hint ? 'checked' : ''}>Indice lettres</label></div>
+      <div class="o2"><label class="sw"><input type="checkbox" id="auto" ${H.auto ? 'checked' : ''}>Enchaîner auto</label><label class="sw" title="Affiche le nombre de mots et de lettres à trouver"><input type="checkbox" id="hint" ${H.hint ? 'checked' : ''}>Indice lettres</label><label class="sw" title="Gel, Bombe, Parasite… 3 pouvoirs par joueur"><input type="checkbox" id="pw" ${H.powersOn ? 'checked' : ''}>Pouvoirs</label></div>
       <button class="btn-launch" data-act="start" ${H.playlist && !H.loading ? '' : 'disabled'}>LANCER<br>LE SHOW</button>`;
   }
   const stripsHTML = () => PRESETS.map((p, i) => `<button type="button" class="strip ${H.q === p ? 'on' : ''}" data-act="preset" data-q="${esc(p)}"><b>${'AB'[Math.floor(i / 5)]}${i % 5 + 1}</b><span>${esc(p)}</span></button>`).join('');
@@ -1166,16 +1396,19 @@ function hostMain(){
       const s = p.say && p.say.round === H.idx && now - p.say.t < 8000 ? p.say : null;
       let bub = '';
       if(s && (H.phase === 'playing' || s.got.length)){
-        const stamp = s.got.length ? `<span class="stamp ok">${s.got.map(g => g === 'artist' ? 'ARTISTE' : 'TITRE').join(' + ')} ✓</span>` : (s.presque ? '<span class="stamp">PRESQUE !</span>' : '');
-        const gv = s.final && !s.got.length && H.phase === 'playing'
+        const stamp = s.frozen ? '<span class="stamp">GELÉ ❄️</span>' : s.got.length ? `<span class="stamp ok">${s.got.map(g => g === 'artist' ? 'ARTISTE' : 'TITRE').join(' + ')} ✓</span>` : (s.presque ? '<span class="stamp">PRESQUE !</span>' : '');
+        const gv = s.final && !s.got.length && !s.frozen && H.phase === 'playing'
           ? ['artist', 'title'].filter(f => !H.found[f]).map(f => `<button class="give" data-act="give" data-i="${s.id}" data-f="${f}">+ ${f === 'artist' ? 'ARTISTE' : 'TITRE'}</button>`).join('') : '';
         bub = `<div class="bub ${s.drawn ? '' : 'in'} ${s.final ? '' : 'live'}">${stamp}<span class="q">« ${esc(s.text)} »</span>${gv ? `<div class="gv">${gv}</div>` : ''}</div>`;
         if(s.final) s.drawn = true;
       }
       const talk = s && now - s.t < 1500 ? 'talk' : '';
       const sc = pad2(p.score);
-      return `<div class="lec ${lead ? 'lead' : ''} ${p.conn ? '' : 'off'} ${H.bump === p.key ? 'bump' : ''} ${talk}" style="--c:${p.color};--cd:${shade(p.color, .45)}">
-        <div class="pool"></div>${bub}${lead ? CROWN_SVG : ''}
+      const frozen = p.frozenUntil > now;
+      const bl = H.bomb && H.bomb.key === p.key ? Math.max(1, H.bomb.at - H.idx) : 0;
+      const fxs = (bl ? `<i class="${bl <= 1 ? 'hot' : ''}">💣 ${bl}</i>` : '') + (frozen ? '<i>❄️</i>' : '') + (p.fleeUntil > now ? '<i>🏃</i>' : '') + (H.bets.has(p.key) ? `<i>🎲 ${H.bets.get(p.key).amt}</i>` : '');
+      return `<div class="lec ${lead ? 'lead' : ''} ${p.conn ? '' : 'off'} ${H.bump === p.key ? 'bump' : ''} ${talk} ${frozen ? 'frozen' : ''}" style="--c:${p.color};--cd:${shade(p.color, .45)}">
+        <div class="pool"></div>${bub}${lead ? CROWN_SVG : ''}${fxs ? `<div class="pfx">${fxs}</div>` : ''}
         <div class="head">${avHTML(p)}</div>
         <div class="deskrow"><div class="dome"></div><div class="lip desk"></div></div>
         <div class="panel"><b class="nm plate">${esc(p.name)}</b><span class="ledbox"><span class="ghost">${'8'.repeat(sc.length)}</span><span class="led">${sc}</span></span></div>
@@ -1294,6 +1527,7 @@ function hostMain(){
   document.addEventListener('change', e => {
     if(e.target.id === 'auto'){ H.auto = e.target.checked; sendAdmin(); }
     if(e.target.id === 'hint'){ H.hint = e.target.checked; store('bt-hint', H.hint ? '1' : '0'); sendAdmin(); }
+    if(e.target.id === 'pw'){ H.powersOn = e.target.checked; store('bt-powers', H.powersOn ? '1' : '0'); sendAdmin(); }
   });
   document.addEventListener('keydown', e => {
     if(e.target.matches('input,select')) return;
@@ -1320,7 +1554,7 @@ function playerMain(){
     faces: storeJSON('bt-faces') || {}, extra: [],
     role: 'player', plays: true,
     peer: null, conn: null, state: null, adm: null, admView: '', admRound: 0, showAns: false,
-    rec: null, listening: false, retry: 0, deadline: null
+    rec: null, listening: false, retry: 0, deadline: null, frozenUntil: 0, fleeUntil: 0, fleeTO: 0
   };
   let fx = null;
 
@@ -1440,6 +1674,98 @@ function playerMain(){
     else if(d.t === 'admin') onAdmin(d);
     else if(d.t === 'denied'){ stopPeer(); renderJoin('« ' + d.who + ' » anime déjà la partie. Rejoins comme joueur, ou demande qu’on le retire depuis la TV.'); }
     else if(d.t === 'revoked'){ P.role = 'player'; P.plays = true; P.admView = ''; P.adm = null; renderShell(); }
+    else if(d.t === 'news') news(d.text, d.bad);
+    else if(d.t === 'fx'){ if(d.kind === 'freeze') freeze(+d.ms || 10000); else if(d.kind === 'flee') flee(+d.ms || 15000); }
+  }
+
+  /* ---- Pouvoirs (téléphone) ---- */
+  let ptT = 0;
+  function news(text, bad){
+    let el = $('#ptoast');
+    if(!el){ el = document.createElement('div'); el.id = 'ptoast'; el.setAttribute('role', 'status'); document.body.appendChild(el); }
+    el.textContent = String(text || '');
+    el.className = 'ptoast' + (bad ? ' bad' : ''); void el.offsetWidth; el.classList.add('show');
+    clearTimeout(ptT); ptT = setTimeout(() => el.classList.remove('show'), 3400);
+  }
+  function renderPowers(s){
+    const box = $('#pow'); if(!box) return;
+    const live = s.powersOn && (s.phase === 'playing' || s.phase === 'reveal');
+    const list = live ? (s.powers || []).filter(id => POWERS[id]) : [];
+    if(!list.length && !(live && s.mirror)){ box.innerHTML = ''; return; }
+    box.innerHTML = `<span class="plaque sm">TES POUVOIRS</span><div class="pw-row">${list.map(id => `<button type="button" class="pw" data-pw="${id}"><i>${POWERS[id].e}</i>${esc(POWERS[id].n.toUpperCase())}</button>`).join('')}${live && s.mirror ? '<button type="button" class="pw armed" disabled><i>🪞</i>MIROIR PRÊT</button>' : ''}</div>`;
+  }
+  function extraHTML(s){
+    let h = '';
+    if(s.bomb && s.bomb.mine) h += `<div class="pnote">💣 Tu tiens la bombe ! Elle explose dans ${s.bomb.left} manche${s.bomb.left > 1 ? 's' : ''} : marque un point pour la refiler.</div>`;
+    if(s.bet) h += `<div class="pnote bet">🎲 Pari en cours : ${s.bet.amt} point${s.bet.amt > 1 ? 's' : ''} sur l’artiste${s.bet.next ? ' de la prochaine chanson' : ''}</div>`;
+    return h;
+  }
+  function sheet(html, onPick){
+    const el = document.createElement('div'); el.className = 'sheet'; el.innerHTML = `<div>${html}</div>`;
+    el.onclick = e => {
+      if(e.target === el){ el.remove(); return; }
+      const b = e.target.closest('button'); if(!b || b.disabled) return;
+      el.remove(); if(!('x' in b.dataset)) onPick(b);
+    };
+    document.body.appendChild(el);
+  }
+  const usePw = o => { if(P.conn && P.conn.open) try{ P.conn.send(Object.assign({t: 'power'}, o)); }catch(e){} };
+  function openPower(id){
+    const pw = POWERS[id]; const s = P.state || {}; if(!pw) return;
+    const head = `<h3>${pw.e} ${esc(pw.n.toUpperCase())}</h3><p>${esc(pw.d)}</p>`;
+    const cancel = '<button type="button" class="btn-ghost" data-x>ANNULER</button>';
+    if(pw.when === 'playing' && s.phase !== 'playing') return news('⛔ Seulement pendant une chanson', true);
+    if(pw.target){
+      const others = s.others || [];
+      if(!others.length) return news('Personne à viser pour l’instant…', true);
+      sheet(head + others.map(o => `<button type="button" class="tg" data-tg="${esc(o.key)}">${avHTML(o)}<span>${esc(o.name)}</span></button>`).join('') + cancel,
+        b => { if(b.dataset.tg) usePw({id, target: b.dataset.tg}); });
+    } else if(id === 'pari'){
+      const sc = s.score || 0;
+      sheet(head + `<p>${s.phase === 'reveal' ? 'Pour la prochaine chanson.' : 'Pour cette chanson (dans les premières secondes).'}</p><div class="bets">${[1, 2, 3].map(n => `<button type="button" class="btn-gold" data-bet="${n}" ${n > sc ? 'disabled' : ''}>${n}</button>`).join('')}</div>${sc < 1 ? '<p class="warn">Il te faut au moins 1 point pour parier.</p>' : ''}` + cancel,
+        b => { if(b.dataset.bet) usePw({id, bet: +b.dataset.bet}); });
+    } else {
+      sheet(head + '<button type="button" class="btn-launch wide go" data-go>LANCER !</button>' + cancel,
+        b => { if('go' in b.dataset) usePw({id}); });
+    }
+  }
+  document.addEventListener('click', e => { const b = e.target.closest('[data-pw]'); if(b && !b.disabled) openPower(b.dataset.pw); });
+  function freeze(ms){
+    P.frozenUntil = Date.now() + ms;
+    if($('#ice')) return;
+    stopListening();
+    const el = document.createElement('div'); el.id = 'ice'; el.className = 'ice'; document.body.appendChild(el);
+    const need = 25; let taps = 0;
+    const draw = () => { const left = Math.max(0, Math.ceil((P.frozenUntil - Date.now()) / 1000));
+      el.innerHTML = `<span>❄️ GELÉ ❄️</span><b>${left}</b><small>Tapote vite pour briser la glace !</small><div class="bar"><i style="width:${Math.round(taps / need * 100)}%"></i></div>`; };
+    const end = () => { clearInterval(iv); el.remove(); P.frozenUntil = 0; };
+    draw();
+    const iv = setInterval(() => { if(Date.now() >= P.frozenUntil) end(); else draw(); }, 250);
+    el.onpointerdown = e => {
+      e.preventDefault(); taps++;
+      el.classList.remove('hit'); void el.offsetWidth; el.classList.add('hit');
+      if(taps >= need){ end(); if(P.conn && P.conn.open) try{ P.conn.send({t: 'thaw'}); }catch(err){} }
+      else draw();
+    };
+    try{ navigator.vibrate && navigator.vibrate(300); }catch(e){}
+  }
+  const TAUNTS = ['ATTRAPE-MOI !', 'RATÉ !', 'TROP LENT !', 'PAR ICI !', 'HIHIHI', 'PRESQUE !', 'NAN NAN NAN'];
+  function jump(m){
+    const w = m.offsetWidth || 150, h = m.offsetHeight || 92;
+    m.style.left = Math.round(8 + Math.random() * Math.max(0, innerWidth - w - 16)) + 'px';
+    m.style.top = Math.round(70 + Math.random() * Math.max(0, innerHeight - h - 110)) + 'px';
+    m.innerHTML = `<span>🏃 ${TAUNTS[Math.floor(Math.random() * TAUNTS.length)]}</span>`;
+    try{ navigator.vibrate && navigator.vibrate(30); }catch(e){}
+  }
+  function flee(ms){
+    P.fleeUntil = Date.now() + ms; stopListening();
+    const m = $('#mic'); if(!m) return;
+    m.classList.add('flee'); jump(m);
+    clearTimeout(P.fleeTO);
+    P.fleeTO = setTimeout(() => {
+      P.fleeUntil = 0; const m2 = $('#mic');
+      if(m2){ m2.classList.remove('flee'); m2.style.left = m2.style.top = ''; micIdleBtn(m2); }
+    }, ms);
   }
   function cmd(o){ if(P.conn && P.conn.open) try{ P.conn.send(Object.assign({t: 'cmd'}, o)); }catch(e){} }
 
@@ -1464,13 +1790,17 @@ function playerMain(){
         <div class="lip blip"></div>
         <div class="plinth"><span id="pround">EN ATTENTE</span><span class="led" id="pchrono"></span></div>
       </div>
+      ${P.plays ? '<section class="powers" id="pow"></section>' : ''}
       <div class="said" id="heard"></div>
       ${SR ? `<div class="langs"><span>MICRO</span><div class="seg"><button type="button" data-l="fr-FR" class="${P.lang === 'fr-FR' ? 'on' : ''}">FRANÇAIS</button><button type="button" data-l="en-US" class="${P.lang === 'en-US' ? 'on' : ''}">ENGLISH</button></div></div>` : ''}
       <form id="tf" class="row"><input class="inp" id="tx" placeholder="Ou tape ta réponse" autocomplete="off" aria-label="Ta réponse"><button class="btn-gold">ENVOYER</button></form>` : ''}
     </div>`;
     if(!fx) fx = makeFX();
     const mic = $('#mic');
-    if(mic) mic.onclick = () => P.listening ? stopListening() : startListening();
+    if(mic){
+      mic.onpointerdown = e => { if(P.fleeUntil > Date.now()){ e.preventDefault(); jump(mic); } };
+      mic.onclick = () => { if(P.fleeUntil > Date.now() || P.frozenUntil > Date.now()) return; P.listening ? stopListening() : startListening(); };
+    }
     document.querySelectorAll('[data-l]').forEach(b => b.onclick = () => {
       P.lang = b.dataset.l; store('bt-lang', P.lang);
       document.querySelectorAll('[data-l]').forEach(x => x.className = x.dataset.l === P.lang ? 'on' : '');
@@ -1478,6 +1808,7 @@ function playerMain(){
     const tf = $('#tf');
     if(tf) tf.onsubmit = e => {
       e.preventDefault(); const v = $('#tx').value.trim(); if(!v) return;
+      if(P.frozenUntil > Date.now() || P.fleeUntil > Date.now()) return;
       send(v, [], true); setHeard('<em>Tu dis</em> « ' + esc(v) + ' »'); $('#tx').value = '';
     };
     if(P.state) onState(P.state, true);
@@ -1528,10 +1859,11 @@ function playerMain(){
     }
     if(s.phase === 'playing' && prev && prev.round !== s.round) setHeard('');
     if(s.phase === 'end' && prev && prev.phase !== 'end' && s.rank === 1 && fx) fx.rain(3500);
+    renderPowers(s);
     if(s.phase === 'lobby') setStatus(P.role === 'admin'
       ? '<div class="stmsg"><b>PRÊT !</b><span>Teste ton micro : ta phrase s’affiche sur la TV.</span></div>'
       : '<div class="stmsg"><b>TU ES SUR LE PLATEAU !</b><span>En attente du lancement. Teste ton micro : ta phrase s’affiche sur la TV.</span></div>');
-    else if(s.phase === 'playing' || s.phase === 'reveal') setStatus(miniFields(s, prev));
+    else if(s.phase === 'playing' || s.phase === 'reveal') setStatus(miniFields(s, prev) + extraHTML(s));
     else if(s.phase === 'end') setStatus(`<div class="stmsg"><b>FIN DU SHOW !</b><span>Tu finis ${s.rank}${s.rank === 1 ? 'er' : 'e'} avec ${s.score} point${s.score > 1 ? 's' : ''}${s.rank === 1 ? ' : disque d’or !' : '.'}</span></div>`);
   }
 
@@ -1540,7 +1872,8 @@ function playerMain(){
     return `<div class="grp"><span class="olbl">CHANSONS</span><div class="seg">${[10, 15, 20, 30].map(n => `<button type="button" class="${n === a.n ? 'on' : ''}" data-c="set" data-n="${n}">${n}</button>`).join('')}</div></div>
       <div class="grp"><span class="olbl">ORDRE</span><div class="seg"><button type="button" class="${a.order !== 'playlist' ? 'on' : ''}" data-c="set" data-order="random">HASARD</button><button type="button" class="${a.order === 'playlist' ? 'on' : ''}" data-c="set" data-order="playlist">PLAYLIST</button></div></div>
       <label class="sw"><input type="checkbox" id="aauto" ${a.auto ? 'checked' : ''}>Enchaîner auto</label>
-      <label class="sw"><input type="checkbox" id="ahint" ${a.hint ? 'checked' : ''}>Indice : nombre de lettres</label>`;
+      <label class="sw"><input type="checkbox" id="ahint" ${a.hint ? 'checked' : ''}>Indice : nombre de lettres</label>
+      <label class="sw"><input type="checkbox" id="apw" ${a.powersOn ? 'checked' : ''}>Pouvoirs (3 par joueur)</label>`;
   }
   function onAdmin(a){
     P.adm = a;
@@ -1627,6 +1960,7 @@ function playerMain(){
   document.addEventListener('change', e => {
     if(e.target.id === 'aauto') cmd({c: 'set', auto: e.target.checked});
     if(e.target.id === 'ahint') cmd({c: 'set', hint: e.target.checked});
+    if(e.target.id === 'apw') cmd({c: 'set', powers: e.target.checked});
   });
 
   /* ---- Micro ---- */
