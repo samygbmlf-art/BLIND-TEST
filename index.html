@@ -510,7 +510,11 @@ body.ph{background:#0C0414;position:relative;min-height:100dvh}
 .ice .bar i{display:block;height:100%;background:#0B2540;transition:width .1s}
 .ice.hit{animation:icehit .12s}
 @keyframes icehit{50%{transform:scale(1.015) rotate(.4deg)}}
-.dome-btn.flee{position:fixed;z-index:45;width:150px;transition:left .2s ease,top .2s ease}
+.dome-btn.flee{position:fixed;z-index:46;width:124px;font-size:13px;padding-top:12px;transition:left .25s cubic-bezier(.3,1.3,.5,1),top .25s cubic-bezier(.3,1.3,.5,1)}
+.dome-btn.flee.on{transition:none}
+.flee-shield{position:fixed;inset:0;z-index:45;background:#08030D66;display:flex;flex-direction:column;align-items:center;justify-content:flex-end;gap:8px;padding:0 16px calc(26px + env(safe-area-inset-bottom));touch-action:none;user-select:none;-webkit-user-select:none}
+.flee-shield span{background:linear-gradient(#FFFBEE,#EFD69A);color:#3A1208;border-radius:12px;padding:8px 14px;font-size:17px;font-weight:700;text-align:center;box-shadow:0 0 0 2px var(--gold-d),0 10px 26px #000A}
+.flee-shield b{font-family:var(--display);font-weight:400;font-size:28px;color:var(--gold);text-shadow:0 2px 0 #4E0612}
 .ptoast{position:fixed;left:50%;top:12px;transform:translate(-50%,-20px);z-index:55;width:max-content;max-width:92vw;background:linear-gradient(#FFFBEE,#EFD69A);color:#3A1208;border-radius:12px;padding:9px 16px;font-size:17px;font-weight:700;text-align:center;box-shadow:0 0 0 2px var(--gold-d),0 10px 26px #000A;opacity:0;pointer-events:none;transition:opacity .25s,transform .25s}
 .ptoast.show{opacity:1;transform:translate(-50%,0)}
 .ptoast.bad{background:linear-gradient(#FFE0E6,#FFB3C1);box-shadow:0 0 0 2px var(--red),0 10px 26px #000A}
@@ -1554,7 +1558,7 @@ function playerMain(){
     faces: storeJSON('bt-faces') || {}, extra: [],
     role: 'player', plays: true,
     peer: null, conn: null, state: null, adm: null, admView: '', admRound: 0, showAns: false,
-    rec: null, listening: false, retry: 0, deadline: null, frozenUntil: 0, fleeUntil: 0, fleeTO: 0
+    rec: null, listening: false, retry: 0, deadline: null, frozenUntil: 0, fleeUntil: 0, fleeTO: 0, fleeIV: 0, dodged: false
   };
   let fx = null;
 
@@ -1749,23 +1753,40 @@ function playerMain(){
     };
     try{ navigator.vibrate && navigator.vibrate(300); }catch(e){}
   }
-  const TAUNTS = ['ATTRAPE-MOI !', 'RATÉ !', 'TROP LENT !', 'PAR ICI !', 'HIHIHI', 'PRESQUE !', 'NAN NAN NAN'];
-  function jump(m){
-    const w = m.offsetWidth || 150, h = m.offsetHeight || 92;
+  const TAUNTS = ['ATTRAPE-MOI !', 'RATÉ !', 'TROP LENT !', 'PAR ICI !', 'HIHIHI', 'PRESQUE !', 'NAN NAN NAN', 'OLÉ !'];
+  // Bouton fuyant : il se déplace tout seul, esquive 2 fois sur 3 quand on le touche, mais peut être attrapé.
+  function jump(m, taunt){
+    const w = m.offsetWidth || 124, h = m.offsetHeight || 76;
     m.style.left = Math.round(8 + Math.random() * Math.max(0, innerWidth - w - 16)) + 'px';
-    m.style.top = Math.round(70 + Math.random() * Math.max(0, innerHeight - h - 110)) + 'px';
-    m.innerHTML = `<span>🏃 ${TAUNTS[Math.floor(Math.random() * TAUNTS.length)]}</span>`;
-    try{ navigator.vibrate && navigator.vibrate(30); }catch(e){}
+    m.style.top = Math.round(60 + Math.random() * Math.max(0, innerHeight - h - 170)) + 'px';
+    if(!P.listening) m.innerHTML = `<span>🏃 ${taunt || TAUNTS[Math.floor(Math.random() * TAUNTS.length)]}</span>`;
   }
   function flee(ms){
     P.fleeUntil = Date.now() + ms; stopListening();
     const m = $('#mic'); if(!m) return;
-    m.classList.add('flee'); jump(m);
-    clearTimeout(P.fleeTO);
-    P.fleeTO = setTimeout(() => {
-      P.fleeUntil = 0; const m2 = $('#mic');
-      if(m2){ m2.classList.remove('flee'); m2.style.left = m2.style.top = ''; micIdleBtn(m2); }
-    }, ms);
+    endFlee(true);
+    // Écran de protection : les taps ratés ne touchent rien d'autre sur la page
+    const sh = document.createElement('div'); sh.className = 'flee-shield'; sh.id = 'fshield';
+    sh.innerHTML = '<b id="fsec"></b><span>🏃 Ton micro s’est enfui ! Attrape-le pour répondre…</span>';
+    const swallow = e => { e.preventDefault(); e.stopPropagation(); };
+    ['pointerdown', 'pointerup', 'click', 'touchstart', 'touchend'].forEach(ev => sh.addEventListener(ev, swallow, {passive: false}));
+    app.appendChild(sh); // dans le même calque que le bouton, juste en dessous de lui
+    m.classList.add('flee'); jump(m, 'ATTRAPE-MOI !');
+    P.fleeIV = setInterval(() => {
+      const left = Math.max(0, Math.ceil((P.fleeUntil - Date.now()) / 1000));
+      const sec = $('#fsec'); if(sec) sec.textContent = left + ' s';
+      if(Date.now() >= P.fleeUntil) return endFlee();
+      if(!P.listening && Math.random() < .55) jump(m);
+    }, 300);
+    clearTimeout(P.fleeTO); P.fleeTO = setTimeout(endFlee, ms);
+  }
+  function endFlee(silent){
+    clearInterval(P.fleeIV); clearTimeout(P.fleeTO);
+    const sh = $('#fshield'); if(sh) sh.remove();
+    if(silent) return;
+    P.fleeUntil = 0;
+    const m = $('#mic');
+    if(m){ m.classList.remove('flee'); m.style.left = m.style.top = ''; if(!P.listening) micIdleBtn(m); }
   }
   function cmd(o){ if(P.conn && P.conn.open) try{ P.conn.send(Object.assign({t: 'cmd'}, o)); }catch(e){} }
 
@@ -1798,8 +1819,20 @@ function playerMain(){
     if(!fx) fx = makeFX();
     const mic = $('#mic');
     if(mic){
-      mic.onpointerdown = e => { if(P.fleeUntil > Date.now()){ e.preventDefault(); jump(mic); } };
-      mic.onclick = () => { if(P.fleeUntil > Date.now() || P.frozenUntil > Date.now()) return; P.listening ? stopListening() : startListening(); };
+      mic.onpointerdown = e => {
+        if(P.fleeUntil > Date.now() && !P.listening){
+          e.stopPropagation();
+          P.dodged = Math.random() < .67; // esquive 2 fois sur 3
+          if(P.dodged){ e.preventDefault(); jump(mic); try{ navigator.vibrate && navigator.vibrate(30); }catch(err){} }
+        }
+      };
+      mic.onclick = e => {
+        e.stopPropagation();
+        if(P.frozenUntil > Date.now()) return;
+        if(P.fleeUntil > Date.now() && P.dodged){ P.dodged = false; return; }
+        if(P.fleeUntil > Date.now() && !P.listening) try{ navigator.vibrate && navigator.vibrate([40, 30, 80]); }catch(err){}
+        P.listening ? stopListening() : startListening();
+      };
     }
     document.querySelectorAll('[data-l]').forEach(b => b.onclick = () => {
       P.lang = b.dataset.l; store('bt-lang', P.lang);
