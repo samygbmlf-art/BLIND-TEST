@@ -16,14 +16,17 @@
 *{box-sizing:border-box;margin:0;padding:0}
 html,body{height:100%}
 body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
-button{font:inherit;cursor:pointer;border:0;border-radius:12px;padding:.7em 1.1em;background:var(--accent);color:#fff;font-weight:700}
+button{font:inherit;cursor:pointer;border:0;border-radius:12px;padding:.7em 1.1em;background:var(--accent);color:#fff;font-weight:700;touch-action:manipulation}
 button:disabled{opacity:.35;cursor:default}
 button.ghost{background:var(--panel2);color:var(--text);font-weight:600}
 input,select{font:inherit;color:var(--text);background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:.7em .9em;min-width:0}
+input[type=checkbox]{width:1.1em;height:1.1em;accent-color:var(--accent);vertical-align:middle}
 input:focus{outline:2px solid var(--accent2)}
 .muted{color:var(--muted)} .small{font-size:.85em}
 .row{display:flex;gap:.5em} .row input{flex:1}
 .warn{background:#3a2a05;color:var(--warn);padding:.6em .8em;border-radius:10px;font-size:.85em}
+.unlock{position:fixed;left:50%;bottom:18px;transform:translateX(-50%);background:var(--warn);color:#1a1200;font-weight:800;padding:.8em 1.4em;border-radius:99px;box-shadow:0 10px 30px #0008;z-index:10;font-size:clamp(14px,1.3vw,22px);animation:bob 1.6s ease-in-out infinite;white-space:nowrap}
+@keyframes bob{50%{transform:translate(-50%,-6px)}}
 
 /* ---------- TV ---------- */
 .tv{min-height:100vh;display:grid;gap:2vw;padding:2.5vw;font-size:clamp(14px,1.25vw,26px)}
@@ -31,13 +34,15 @@ input:focus{outline:2px solid var(--accent2)}
 .join{background:var(--panel);border-radius:24px;padding:2vw;display:flex;flex-direction:column;align-items:center;gap:.8em;text-align:center}
 .join h1{font-size:2.6em;letter-spacing:-.02em;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
 .qr{background:#fff;border-radius:18px;padding:12px;line-height:0}
-.qr img{width:min(22vw,320px);height:auto;image-rendering:pixelated}
+.qr img,.qr .ph{width:min(22vw,320px);height:auto;aspect-ratio:1;image-rendering:pixelated}
 .code{font-size:3em;font-weight:800;letter-spacing:.15em}
 .join h2,.setup h2{font-size:1.2em;margin-top:.6em}
 .chips{display:flex;flex-wrap:wrap;gap:.5em;justify-content:center}
 .chip{background:var(--panel2);border-radius:999px;padding:.4em .9em;display:flex;align-items:center;gap:.5em}
 .chip i{width:.7em;height:.7em;border-radius:50%;display:inline-block}
 .chip em{color:var(--muted);font-size:.8em}
+.admline{display:flex;align-items:center;gap:.6em;justify-content:center;flex-wrap:wrap;margin-top:.4em}
+.admline button{padding:.3em .8em;font-size:.8em}
 .off{opacity:.4}
 .setup{background:var(--panel);border-radius:24px;padding:2vw;display:flex;flex-direction:column;gap:.9em;min-height:0}
 .presets{display:flex;flex-wrap:wrap;gap:.4em}
@@ -55,7 +60,7 @@ button.big{font-size:1.2em;padding:.8em 1.6em;margin-left:auto}
 
 .game{grid-template-columns:1fr minmax(240px,24vw)}
 .game main{display:flex;flex-direction:column;gap:1.4em;min-width:0}
-.top{display:flex;justify-content:space-between;font-size:1.3em;font-weight:700}
+.top{display:flex;justify-content:space-between;font-size:1.3em;font-weight:700;gap:1em}
 .bar{height:10px;background:var(--panel2);border-radius:99px;overflow:hidden}
 .bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent2),var(--accent))}
 .stage{display:flex;gap:3vw;align-items:center}
@@ -78,12 +83,12 @@ button.big{font-size:1.2em;padding:.8em 1.6em;margin-left:auto}
 .tag{background:var(--ok);color:#04150e;border-radius:99px;padding:.1em .6em;font-size:.8em;font-weight:800}
 .fi button{padding:.25em .7em;font-size:.8em;margin-left:auto}
 .fi button+button{margin-left:0}
-.ctrl{display:flex;gap:.6em;margin-top:auto}
+.ctrl{display:flex;gap:.6em;margin-top:auto;flex-wrap:wrap}
 .board{background:var(--panel);border-radius:24px;padding:1.4em;display:flex;flex-direction:column;gap:.5em;overflow:auto}
 .board h2{font-size:1.2em;margin-bottom:.4em}
 .pl{display:flex;align-items:center;gap:.6em;padding:.5em .7em;border-radius:12px;background:var(--panel2)}
 .pl .r{width:1.6em;color:var(--muted);font-weight:700}
-.pl i{width:.8em;height:.8em;border-radius:50%}
+.pl i{width:.8em;height:.8em;border-radius:50%;flex:none}
 .pl b{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .pl s{text-decoration:none;font-weight:800;font-size:1.3em}
 
@@ -95,7 +100,27 @@ button.big{font-size:1.2em;padding:.8em 1.6em;margin-left:auto}
 .podium .p1{height:34vh;background:linear-gradient(var(--accent),var(--accent2))}
 .podium .p2{height:26vh} .podium .p3{height:20vh}
 
-/* ---------- PHONE ---------- */
+/* Tablette (portrait ou écran moyen) */
+@media (max-width:1100px), (orientation:portrait){
+  .tv{font-size:clamp(14px,2.1vw,22px);padding:16px;gap:16px}
+  .lobby{grid-template-columns:1fr}
+  .join,.setup{padding:20px}
+  .qr img,.qr .ph{width:min(40vw,280px)}
+  .results{max-height:none;grid-template-columns:repeat(auto-fill,minmax(130px,1fr))}
+  .game{grid-template-columns:1fr}
+  .board{flex-direction:row;flex-wrap:wrap}
+  .board h2{width:100%}
+  .pl{flex:1 1 180px}
+  .podium div{width:min(28vw,220px)}
+}
+@media (orientation:portrait){
+  .stage{flex-direction:column}
+  .cover{width:min(62vw,34vh)}
+  .slots{width:100%}
+  .slot div{font-size:2.2em}
+}
+
+/* ---------- TÉLÉPHONE ---------- */
 .phone{min-height:100dvh;display:flex;flex-direction:column;gap:14px;padding:16px;max-width:520px;margin:0 auto}
 .phone h1{font-size:1.8em;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
 .hdr{display:flex;justify-content:space-between;align-items:center;background:var(--panel);border-radius:16px;padding:12px 14px}
@@ -106,8 +131,9 @@ button.big{font-size:1.2em;padding:.8em 1.6em;margin-left:auto}
 .st-slots span.y{background:var(--ok);color:#04150e;font-weight:800}
 .rev{display:flex;gap:12px;align-items:center;text-align:left}
 .rev img{width:64px;height:64px;border-radius:10px}
-.mic{align-self:center;width:min(62vw,240px);aspect-ratio:1;border-radius:50%;font-size:1.25em;line-height:1.25;background:radial-gradient(circle at 35% 30%,#ff6a9c,var(--accent) 60%,#c4135a);box-shadow:0 14px 40px #ff3d7f55;user-select:none;-webkit-user-select:none;touch-action:manipulation;margin:6px 0}
+.mic{align-self:center;width:min(62vw,240px);aspect-ratio:1;border-radius:50%;font-size:1.25em;line-height:1.25;background:radial-gradient(circle at 35% 30%,#ff6a9c,var(--accent) 60%,#c4135a);box-shadow:0 14px 40px #ff3d7f55;user-select:none;-webkit-user-select:none;margin:6px 0}
 .mic.on{background:radial-gradient(circle at 35% 30%,#7dffc9,var(--ok) 60%,#11a56c);color:#04150e;animation:ring 1s ease-out infinite}
+.mic.sm{width:min(44vw,170px)}
 @keyframes ring{0%{box-shadow:0 0 0 0 #2ee59d99}100%{box-shadow:0 0 0 28px #2ee59d00}}
 .heard{text-align:center;min-height:1.6em;font-size:1.15em;font-style:italic;color:var(--muted)}
 .lang{display:flex;justify-content:center;gap:6px}
@@ -115,6 +141,32 @@ button.big{font-size:1.2em;padding:.8em 1.6em;margin-left:auto}
 .lang button.ghost{opacity:.7}
 .flash{animation:flash .6s ease}
 @keyframes flash{0%{background:var(--ok)}}
+.roles{display:flex;flex-direction:column;gap:10px}
+.roles button{padding:16px;font-size:1.1em}
+.roles label{display:flex;gap:8px;align-items:center;justify-content:center}
+
+/* Panneau animateur */
+.adm{background:var(--panel);border:2px solid var(--accent2);border-radius:16px;padding:14px;display:flex;flex-direction:column;gap:10px}
+.adm h3{font-size:1em;color:var(--accent2);text-transform:uppercase;letter-spacing:.08em}
+.adm .presets button{font-size:.8em;padding:6px 10px}
+.ares{display:flex;flex-direction:column;gap:6px;max-height:40vh;overflow:auto}
+.ares button{display:flex;gap:10px;align-items:center;text-align:left;background:var(--panel2);color:var(--text);font-weight:500;padding:6px;border:2px solid transparent}
+.ares button.sel{border-color:var(--accent)}
+.ares img{width:44px;height:44px;border-radius:8px;flex:none}
+.ares b{display:block;font-size:.9em} .ares span{font-size:.75em;color:var(--muted)}
+.abtns{display:grid;grid-template-columns:1fr 1.4fr;gap:8px}
+.abtns button{padding:16px 8px;font-size:1.1em}
+.ans{display:flex;gap:10px;align-items:center;background:var(--panel2);border-radius:12px;padding:8px;min-height:60px}
+.ans img{width:52px;height:52px;border-radius:8px}
+.ans button{flex:1}
+.afeed{display:flex;flex-direction:column;gap:6px}
+.afeed div{background:var(--panel2);border-radius:10px;padding:6px 8px;display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:.9em}
+.afeed q{color:var(--muted);font-style:italic;flex:1}
+.afeed button{padding:4px 10px;font-size:.8em}
+.aplayers{display:flex;flex-direction:column;gap:6px}
+.aplayers div{display:flex;align-items:center;gap:8px;background:var(--panel2);border-radius:10px;padding:4px 6px 4px 10px}
+.aplayers b{flex:1} .aplayers s{text-decoration:none;font-weight:800;min-width:1.6em;text-align:center}
+.aplayers button{padding:4px 12px}
 </style>
 </head>
 <body>
@@ -123,20 +175,22 @@ button.big{font-size:1.2em;padding:.8em 1.6em;margin-left:auto}
 'use strict';
 /* =====================================================================
    Blind Test — un seul fichier.
-   Sans paramètre : écran TV (hôte).  Avec ?room=CODE : page joueur.
+   Sans paramètre : écran TV (hôte).  Avec ?room=CODE : téléphone (joueur ou animateur).
    ===================================================================== */
 const $ = s => document.querySelector(s);
 const app = $('#app');
 const PREFIX = 'bbbt-v1-';
 const COLORS = ['#ff3d7f','#7c5cff','#2ee59d','#ffb020','#29b6f6','#ff7043','#ec5bff','#c6ff00','#00e5c4','#ff5252'];
+const PRESETS = ['Années 80','Années 90','Années 2000','Hits du moment','Variété française','Rap français','Rock classique','Disney','Disco','Génériques TV'];
 const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
 function store(k, v){ try{ if(v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); }catch(e){ return null; } }
+function keepAwake(){ try{ navigator.wakeLock && navigator.wakeLock.request('screen').catch(() => {}); }catch(e){} }
 
 /* ---------------- Correspondance tolérante des réponses ---------------- */
 const STOP = new Set(['the','le','la','les','l','un','une','a','et','and','de','du','des','d','of']);
 function norm(s){
   return String(s || '').toLowerCase()
-    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .normalize('NFD').replace(/[̀-ͯ]/g, '')
     .replace(/\(.*?\)|\[.*?\]/g, ' ')
     .replace(/\b(feat|ft|featuring)\b.*$/, ' ')
     .replace(/&/g, ' et ')
@@ -190,13 +244,12 @@ if(ROOM) playerMain(); else hostMain();
    ÉCRAN TV (HÔTE)
    ===================================================================== */
 function hostMain(){
-  const PRESETS = ['Années 80','Années 90','Années 2000','Hits du moment','Variété française','Rap français','Rock classique','Disney','Disco','Génériques TV'];
   const H = {
     code: '', peer: null, online: false, err: '',
-    players: new Map(), phase: 'lobby', tracks: [], idx: -1, cur: null,
+    players: new Map(), adminKey: null, phase: 'lobby', tracks: [], idx: -1, cur: null,
     found: {artist: null, title: null}, feed: [], feedId: 0,
     q: '', results: null, playlist: null, loading: '', n: 15, auto: true,
-    audio: new Audio(), ctx: null, nextTO: 0, revealTO: 0, roundToken: 0
+    audio: new Audio(), ctx: null, unlocked: false, nextTO: 0, revealTO: 0, roundToken: 0
   };
   H.audio.preload = 'auto';
   H.audio.addEventListener('ended', () => { if(H.phase === 'playing') reveal(); });
@@ -206,7 +259,23 @@ function hostMain(){
   const title = t => t.title_short || t.title || '';
   const cover = t => (t.album && (t.album.cover_xl || t.album.cover_big || t.album.cover_medium)) || '';
   const joinUrl = () => location.href.split(/[?#]/)[0] + '?room=' + H.code;
-  const ranked = () => [...H.players.values()].sort((a, b) => b.score - a.score);
+  const ranked = () => [...H.players.values()].filter(p => p.plays).sort((a, b) => b.score - a.score);
+  const adminP = () => H.adminKey ? H.players.get(H.adminKey) : null;
+
+  /* ---- Déblocage du son (les navigateurs exigent un premier geste sur l'appareil) ---- */
+  const banner = document.createElement('div');
+  banner.className = 'unlock'; banner.textContent = '👆 Touchez l’écran une fois pour activer le son';
+  document.body.appendChild(banner);
+  function unlock(){
+    if(H.unlocked) return;
+    H.unlocked = true; banner.remove(); ding([660]); keepAwake();
+    H.audio.muted = true;
+    H.audio.play().then(() => { H.audio.pause(); H.audio.muted = false; }).catch(() => { H.audio.muted = false; });
+    sendAdmin();
+  }
+  document.addEventListener('pointerdown', unlock);
+  document.addEventListener('keydown', unlock);
+  document.addEventListener('visibilitychange', () => { if(document.visibilityState === 'visible' && H.unlocked) keepAwake(); });
 
   /* ---- Réseau ---- */
   function genCode(){ const A = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let s = ''; for(let i = 0; i < 4; i++) s += A[Math.floor(Math.random() * A.length)]; return s; }
@@ -232,13 +301,27 @@ function hostMain(){
     if(d.t === 'hello'){
       const name = String(d.name || '').trim().slice(0, 16) || 'Joueur';
       const k = name.toLowerCase();
+      const wantsAdmin = d.role === 'admin';
+      if(wantsAdmin){
+        const cur = adminP();
+        if(cur && cur.key !== k && cur.conn && cur.conn.open){
+          try{ c.send({t: 'denied', who: cur.name}); }catch(e){}
+          return;
+        }
+      }
       let p = H.players.get(k);
-      if(!p){ p = {name, key: k, score: 0, color: COLORS[H.players.size % COLORS.length], last: ''}; H.players.set(k, p); }
+      if(!p){ p = {name, key: k, score: 0, color: COLORS[H.players.size % COLORS.length], last: '', plays: true, admin: false}; H.players.set(k, p); }
+      if(wantsAdmin){
+        const old = adminP(); if(old && old !== p){ old.admin = false; old.plays = true; }
+        H.adminKey = k; p.admin = true; p.plays = !!d.plays;
+      } else if(p.admin){ p.admin = false; p.plays = true; H.adminKey = null; }
       if(p.conn && p.conn !== c) try{ p.conn.close(); }catch(e){}
       p.conn = c; c.pkey = k;
-      refresh(); sendState(p);
+      refresh(); sendState(p); sendAdmin();
     } else if(d.t === 'answer'){
-      const p = H.players.get(c.pkey); if(p) onAnswer(p, d);
+      const p = H.players.get(c.pkey); if(p && p.plays) onAnswer(p, d);
+    } else if(d.t === 'cmd'){
+      if(c.pkey && c.pkey === H.adminKey) adminCmd(d);
     }
   }
   function sendState(p){
@@ -249,12 +332,63 @@ function hostMain(){
       p.conn.send({
         t: 'state', phase: H.phase, round: H.idx + 1, total: H.tracks.length,
         score: p.score, rank: r.indexOf(p) + 1, count: r.length, me: p.name,
+        admin: !!p.admin, plays: !!p.plays,
         found: {artist: H.found.artist, title: H.found.title},
         reveal: showRev ? {artist: t.artist.name, title: title(t), cover: t.album && t.album.cover_medium} : null
       });
     }catch(e){}
   }
-  const broadcast = () => H.players.forEach(sendState);
+  const broadcast = () => { H.players.forEach(sendState); sendAdmin(); };
+
+  /* ---- Animateur (téléphone) ---- */
+  function sendAdmin(){
+    const p = adminP();
+    if(!p || !p.conn || !p.conn.open) return;
+    const a = {t: 'admin', phase: H.phase, unlocked: H.unlocked, auto: H.auto, n: H.n};
+    if(H.phase === 'lobby'){
+      a.results = Array.isArray(H.results)
+        ? H.results.slice(0, 30).map(r => ({id: r.id, title: r.title, nb: r.nb_tracks, pic: r.picture_small || r.picture_medium}))
+        : H.results;
+      a.playlist = H.playlist ? {id: H.playlist.id, title: H.playlist.title, count: H.playlist.tracks.length} : null;
+      a.loading = H.loading; a.q = H.q;
+      a.players = [...H.players.values()].filter(x => x.plays).map(x => ({name: x.name, on: !!x.conn}));
+    } else {
+      const t = H.cur;
+      a.round = H.idx + 1; a.total = H.tracks.length; a.paused = H.audio.paused;
+      a.track = t ? {artist: t.artist.name, title: title(t), cover: t.album && (t.album.cover_small || t.album.cover_medium)} : null;
+      a.found = H.found;
+      a.feed = H.feed.slice(-6).reverse().map(f => ({id: f.id, name: (H.players.get(f.key) || {}).name || '?', text: f.text, got: f.got}));
+      a.players = ranked().map(x => ({key: x.key, name: x.name, score: x.score, on: !!x.conn}));
+    }
+    try{ p.conn.send(a); }catch(e){}
+  }
+  function adminCmd(d){
+    switch(d.c){
+      case 'search': { const q = $('#q'); if(q) q.value = String(d.q || ''); search(String(d.q || '')); break; }
+      case 'pick': { const id = String(d.id || '').replace(/\D/g, ''); if(id) pick(id); break; }
+      case 'set':
+        if(d.n) H.n = Math.max(5, Math.min(50, +d.n || 15));
+        if('auto' in d) H.auto = !!d.auto;
+        if(H.phase === 'lobby'){ const n = $('#n'); if(n) n.value = H.n; const a = $('#auto'); if(a) a.checked = H.auto; }
+        sendAdmin(); break;
+      case 'start': if(H.phase === 'lobby') startGame(true); break;
+      case 'pause': ACT.pause(); break;
+      case 'next': next(); break;
+      case 'give': ACT.give(d); break;
+      case 'score': {
+        const p = H.players.get(String(d.key || ''));
+        if(p){ p.score = Math.max(0, p.score + (+d.d > 0 ? 1 : -1)); refresh(); broadcast(); }
+        break;
+      }
+      case 'quit': if(H.phase === 'playing' || H.phase === 'reveal') endGame(); break;
+      case 'lobby': if(H.phase === 'end') backToLobby(); break;
+    }
+  }
+  function freeAdmin(){
+    const p = adminP(); H.adminKey = null;
+    if(p){ p.admin = false; p.plays = true; try{ p.conn && p.conn.open && p.conn.send({t: 'revoked'}); }catch(e){} sendState(p); }
+    refresh();
+  }
 
   /* ---- Deezer (JSONP, pas de clé nécessaire) ---- */
   let jsonpN = 0;
@@ -286,7 +420,7 @@ function hostMain(){
       H.playlist = {id, title: info.title, picture: info.picture_medium, tracks};
       H.loading = '';
     }catch(e){ H.loading = '⚠ ' + e.message; }
-    renderLobby();
+    if(H.phase === 'lobby') renderLobby();
   }
 
   /* ---- Partie ---- */
@@ -294,6 +428,7 @@ function hostMain(){
   function ding(freqs){
     try{
       if(!H.ctx) H.ctx = new (window.AudioContext || window.webkitAudioContext)();
+      if(H.ctx.state === 'suspended') H.ctx.resume();
       const t0 = H.ctx.currentTime;
       (freqs || [880, 1320]).forEach((f, i) => {
         const o = H.ctx.createOscillator(), g = H.ctx.createGain();
@@ -304,10 +439,12 @@ function hostMain(){
       });
     }catch(e){}
   }
-  function startGame(){
-    if(!H.playlist) return;
-    H.n = +($('#n') ? $('#n').value : H.n); H.auto = $('#auto') ? $('#auto').checked : H.auto;
-    ding([660]); // débloque l'audio sur geste utilisateur
+  function startGame(remote){
+    if(!H.playlist || H.loading) return;
+    if(!remote){
+      if($('#n')) H.n = +$('#n').value;
+      if($('#auto')) H.auto = $('#auto').checked;
+    }
     H.tracks = shuffle(H.playlist.tracks).slice(0, H.n);
     H.players.forEach(p => { p.score = 0; p.last = ''; });
     H.idx = -1; H.cur = null;
@@ -325,7 +462,7 @@ function hostMain(){
     H.cur = t; H.found = {artist: null, title: null}; H.feed = []; H.phase = 'playing';
     H.audio.src = t.preview; H.audio.currentTime = 0;
     renderGame(); broadcast();
-    try{ await H.audio.play(); }catch(e){ const b = $('#pausebtn'); if(b) b.textContent = '▶ Lancer le son'; }
+    try{ await H.audio.play(); }catch(e){ const b = $('#pausebtn'); if(b) b.textContent = '▶ Lancer le son'; sendAdmin(); }
   }
   function reveal(){
     if(H.phase !== 'playing') return;
@@ -363,14 +500,14 @@ function hostMain(){
     if(d.final || got.length){
       H.feed.push({id: ++H.feedId, key: p.key, text, got});
       if(H.feed.length > 30) H.feed.shift();
+      renderGame();
     }
-    if(d.final || got.length){ renderGame(); }
     if(got.length) broadcast();
   }
 
   /* ---- Rendu ---- */
   function refresh(){
-    if(H.phase === 'lobby'){ const el = $('#chips'); el ? (el.innerHTML = chipsHTML()) : renderLobby(); }
+    if(H.phase === 'lobby'){ const el = $('#chips'); if(el){ el.innerHTML = chipsHTML(); sendAdmin(); } else renderLobby(); }
     else if(H.phase === 'end') renderEnd();
     else renderGame();
   }
@@ -379,8 +516,15 @@ function hostMain(){
     catch(e){ return ''; }
   }
   function chipsHTML(){
-    if(!H.players.size) return '<span class="muted">Scanne le QR code pour rejoindre</span>';
-    return [...H.players.values()].map(p => `<span class="chip ${p.conn ? '' : 'off'}"><i style="background:${p.color}"></i>${esc(p.name)}${p.last ? ` <em>« ${esc(p.last)} »</em>` : ''}</span>`).join('');
+    const list = [...H.players.values()].filter(p => p.plays);
+    const a = adminP();
+    const chips = list.length
+      ? '<div class="chips">' + list.map(p => `<span class="chip ${p.conn ? '' : 'off'}"><i style="background:${p.color}"></i>${esc(p.name)}${p.admin ? ' 🎛' : ''}${p.last ? ` <em>« ${esc(p.last)} »</em>` : ''}</span>`).join('') + '</div>'
+      : '<span class="muted">Scanne le QR code pour rejoindre</span>';
+    const adm = a
+      ? `<div class="admline ${a.conn ? '' : 'off'}"><span>🎛 Animateur : <b>${esc(a.name)}</b>${a.plays ? '' : ' <span class="muted">(ne joue pas)</span>'}</span><button class="ghost" data-act="freeadmin">Retirer</button></div>`
+      : '<div class="admline muted small">Pas d’animateur : choisis « Animer la partie » en rejoignant avec ton téléphone.</div>';
+    return chips + adm;
   }
   function resultsHTML(){
     const r = H.results;
@@ -395,8 +539,8 @@ function hostMain(){
     if(!H.playlist) return '<span class="muted">Aucune playlist choisie.</span>';
     return `Playlist : <b>${esc(H.playlist.title)}</b> <span class="muted">(${H.playlist.tracks.length} extraits disponibles)</span>`;
   }
-  const updateResults = () => { const el = $('#results'); if(el) el.innerHTML = resultsHTML(); };
-  const updateChosen = () => { const el = $('#chosen'); if(el) el.innerHTML = chosenHTML(); };
+  const updateResults = () => { const el = $('#results'); if(el) el.innerHTML = resultsHTML(); sendAdmin(); };
+  const updateChosen = () => { const el = $('#chosen'); if(el) el.innerHTML = chosenHTML(); sendAdmin(); };
   const netText = () => H.err || (H.online ? '🟢 Prêt — les joueurs peuvent rejoindre' : 'Connexion au réseau…');
 
   function renderLobby(){
@@ -405,13 +549,13 @@ function hostMain(){
     <div class="tv lobby">
       <section class="join">
         <h1>Blind Test</h1>
-        <div class="qr">${H.online ? qrImg(joinUrl()) : '<div style="width:min(22vw,320px);aspect-ratio:1"></div>'}</div>
+        <div class="qr">${H.online ? qrImg(joinUrl()) : '<div class="ph"></div>'}</div>
         <div class="code">${esc(H.code)}</div>
         <div class="muted small" style="word-break:break-all">${esc(joinUrl())}</div>
         <div id="net" class="muted small">${esc(netText())}</div>
         ${location.protocol === 'file:' ? '<div class="warn">Page ouverte en local : les téléphones ne pourront pas la rejoindre. Héberge-la en HTTPS (GitHub Pages).</div>' : ''}
         <h2>Joueurs</h2>
-        <div id="chips" class="chips">${chipsHTML()}</div>
+        <div id="chips">${chipsHTML()}</div>
       </section>
       <section class="setup">
         <h2>Playlist Deezer</h2>
@@ -433,6 +577,9 @@ function hostMain(){
       const v = $('#url').value.trim(); const m = v.match(/playlist\/(\d+)/) || v.match(/^(\d{4,})$/);
       if(m) pick(m[1]); else { H.loading = '⚠ Lien non reconnu : ouvre-le dans le navigateur et copie l’adresse complète (…/playlist/123456).'; updateChosen(); }
     };
+    $('#n').onchange = e => { H.n = +e.target.value; sendAdmin(); };
+    $('#auto').onchange = e => { H.auto = e.target.checked; sendAdmin(); };
+    sendAdmin();
   }
   function slot(label, value, who, rev){
     const show = who || rev;
@@ -451,10 +598,11 @@ function hostMain(){
   function renderGame(){
     const t = H.cur; if(!t) return;
     const rev = H.phase === 'reveal';
+    const a = adminP();
     app.innerHTML = `
     <div class="tv game">
       <main>
-        <div class="top"><span>Manche ${H.idx + 1} / ${H.tracks.length}</span><span class="muted">Code ${esc(H.code)}</span></div>
+        <div class="top"><span>Manche ${H.idx + 1} / ${H.tracks.length}</span><span class="muted">${a && a.conn ? '🎛 ' + esc(a.name) + ' · ' : ''}Code ${esc(H.code)}</span></div>
         <div class="bar"><i id="prog"></i></div>
         <div class="stage">
           <div class="cover">${rev ? `<img src="${esc(cover(t))}" alt="">` : '<span>?</span>'}</div>
@@ -469,8 +617,9 @@ function hostMain(){
       </main>
       <aside class="board">${boardHTML()}</aside>
     </div>`;
+    sendAdmin();
   }
-  function updateCtrl(){ const b = $('#pausebtn'); if(b) b.textContent = H.audio.paused ? '▶ Reprendre' : '⏸ Pause'; }
+  function updateCtrl(){ const b = $('#pausebtn'); if(b) b.textContent = H.audio.paused ? '▶ Reprendre' : '⏸ Pause'; sendAdmin(); }
   function renderEnd(){
     const r = ranked();
     const pod = [r[1], r[0], r[2]].map((p, i) => p ? `<div class="p${[2, 1, 3][i]}"><span>${[2, 1, 3][i]}${[2, 1, 3][i] === 1 ? 'er' : 'e'}</span><b>${esc(p.name)}</b><s>${p.score}</s></div>` : '').join('');
@@ -481,6 +630,7 @@ function hostMain(){
       <div class="muted">${r.slice(3).map((p, i) => `${i + 4}. ${esc(p.name)} — ${p.score}`).join(' · ')}</div>
       <div class="ctrl"><button data-act="lobby">Nouvelle partie</button></div>
     </div>`;
+    sendAdmin();
   }
   (function tick(){
     const el = $('#prog');
@@ -492,18 +642,21 @@ function hostMain(){
   const ACT = {
     preset: d => { const q = $('#q'); if(q) q.value = d.q; search(d.q); },
     pick: d => pick(d.id),
-    start: startGame,
+    start: () => startGame(false),
     next,
     quit: endGame,
     lobby: backToLobby,
+    freeadmin: freeAdmin,
     pause: () => {
-      if(H.audio.paused){ H.audio.play().catch(() => {}); if(H.phase === 'reveal' && H.auto) H.nextTO = setTimeout(next, 8000); }
+      if(H.phase !== 'playing' && H.phase !== 'reveal') return;
+      if(H.audio.paused){ H.audio.play().catch(() => {}); if(H.phase === 'reveal' && H.auto){ clearTimeout(H.nextTO); H.nextTO = setTimeout(next, 8000); } }
       else { H.audio.pause(); clearTimeout(H.nextTO); }
     },
     give: d => {
       const f = H.feed.find(x => x.id == d.i); if(!f) return;
+      const field = d.f === 'artist' ? 'artist' : 'title';
       const p = H.players.get(f.key);
-      if(award(p, d.f)){ f.got.push(d.f); renderGame(); broadcast(); }
+      if(award(p, field)){ f.got.push(field); renderGame(); broadcast(); }
     }
   };
   document.addEventListener('click', e => { const a = e.target.closest('[data-act]'); if(a && !a.disabled && ACT[a.dataset.act]) ACT[a.dataset.act](a.dataset); });
@@ -519,30 +672,42 @@ function hostMain(){
 }
 
 /* =====================================================================
-   PAGE JOUEUR (TÉLÉPHONE)
+   TÉLÉPHONE : JOUEUR OU ANIMATEUR
    ===================================================================== */
 function playerMain(){
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
-  const P = {name: store('bt-name') || '', lang: store('bt-lang') || 'fr-FR', peer: null, conn: null, state: null, rec: null, listening: false, retry: 0};
+  const P = {
+    name: store('bt-name') || '', lang: store('bt-lang') || 'fr-FR',
+    role: 'player', plays: true,
+    peer: null, conn: null, state: null, adm: null, admView: '', admRound: 0, showAns: false,
+    rec: null, listening: false, retry: 0
+  };
 
   function renderJoin(msg){
     app.innerHTML = `
     <div class="phone">
       <h1>Blind Test</h1>
       <p class="muted">Partie <b>${esc(ROOM)}</b></p>
-      <form id="jf" style="display:flex;flex-direction:column;gap:12px">
-        <input id="nm" maxlength="16" placeholder="Ton prénom" value="${esc(P.name)}" autocomplete="nickname">
-        <button>Rejoindre</button>
-      </form>
+      <input id="nm" maxlength="16" placeholder="Ton prénom" value="${esc(P.name)}" autocomplete="nickname">
+      <div class="roles">
+        <button type="button" id="bp">🎮 Jouer</button>
+        <button type="button" id="ba" class="ghost">🎛 Animer la partie</button>
+        <label class="small muted"><input type="checkbox" id="ap"> L’animateur joue aussi</label>
+      </div>
       ${msg ? `<p class="warn">${esc(msg)}</p>` : ''}
       ${SR ? '' : '<p class="warn">La reconnaissance vocale n’est pas disponible sur ce navigateur : tu pourras répondre au clavier. Sur iPhone, utilise Safari ; sur Android, Chrome.</p>'}
+      <p class="muted small">L’animateur choisit la playlist, lance la partie, passe les chansons et valide les réponses mal comprises. Une seule personne peut animer.</p>
     </div>`;
-    $('#jf').onsubmit = e => {
-      e.preventDefault();
+    const go = role => {
       const n = $('#nm').value.trim(); if(!n) return $('#nm').focus();
-      P.name = n; store('bt-name', n); renderShell(); connect();
-      try{ navigator.wakeLock && navigator.wakeLock.request('screen').catch(() => {}); }catch(e){}
+      P.name = n; store('bt-name', n);
+      P.role = role; P.plays = role === 'player' ? true : $('#ap').checked;
+      P.retry = 0; P.admView = ''; P.adm = null; P.state = null;
+      renderShell(); connect(); keepAwake();
     };
+    $('#bp').onclick = () => go('player');
+    $('#ba').onclick = () => go('admin');
+    $('#nm').onkeydown = e => { if(e.key === 'Enter') go('player'); };
   }
 
   function connect(){
@@ -551,67 +716,171 @@ function playerMain(){
     const peer = new Peer({debug: 0}); P.peer = peer;
     peer.on('open', () => {
       const c = peer.connect(PREFIX + ROOM, {reliable: true}); P.conn = c;
-      c.on('open', () => { P.retry = 0; c.send({t: 'hello', name: P.name}); });
-      c.on('data', onState);
+      c.on('open', () => { P.retry = 0; c.send({t: 'hello', name: P.name, role: P.role, plays: P.plays}); });
+      c.on('data', onData);
       c.on('close', () => { if(P.peer === peer) reconnect(); });
     });
     peer.on('error', e => {
-      if(e.type === 'peer-unavailable') return renderJoin('Partie « ' + ROOM + ' » introuvable. Vérifie le code affiché sur la TV, ou rescanne le QR code.');
+      if(P.peer !== peer) return;
+      if(e.type === 'peer-unavailable'){ stopPeer(); return renderJoin('Partie « ' + ROOM + ' » introuvable. Vérifie le code affiché sur la TV, ou rescanne le QR code.'); }
       reconnect();
     });
   }
+  function stopPeer(){ const p = P.peer; P.peer = null; try{ p && p.destroy(); }catch(e){} }
   function reconnect(){
-    if(P.retry > 8) return renderJoin('Connexion perdue. Rejoins à nouveau.');
+    if(P.retry > 8){ stopPeer(); return renderJoin('Connexion perdue. Rejoins à nouveau.'); }
     P.retry++; setStatus('<span class="muted">Reconnexion…</span>');
-    setTimeout(connect, 1500);
+    setTimeout(() => { if(P.peer) connect(); }, 1500);
   }
+  function onData(d){
+    if(!d || typeof d !== 'object') return;
+    if(d.t === 'state') onState(d);
+    else if(d.t === 'admin') onAdmin(d);
+    else if(d.t === 'denied'){ stopPeer(); renderJoin('« ' + d.who + ' » anime déjà la partie. Rejoins comme joueur, ou demande qu’on le retire depuis la TV.'); }
+    else if(d.t === 'revoked'){ P.role = 'player'; P.plays = true; P.admView = ''; P.adm = null; renderShell(); }
+  }
+  function cmd(o){ if(P.conn && P.conn.open) try{ P.conn.send(Object.assign({t: 'cmd'}, o)); }catch(e){} }
 
   function renderShell(){
+    const isAdm = P.role === 'admin';
     app.innerHTML = `
     <div class="phone">
-      <div class="hdr"><b>${esc(P.name)}</b><span id="sc">0 pt</span></div>
+      <div class="hdr"><b>${esc(P.name)}${isAdm ? ' 🎛' : ''}</b><span id="sc">${P.plays ? '0 pt' : 'Animateur'}</span></div>
+      ${isAdm ? '<div class="adm" id="adm"><span class="muted">Connexion…</span></div>' : ''}
+      ${P.plays || !isAdm ? `
       <div class="status" id="st"></div>
-      <button class="mic" id="mic" ${SR ? '' : 'disabled'}>${SR ? '🎤<br>Appuie et parle' : 'Micro<br>indisponible'}</button>
+      <button class="mic ${isAdm ? 'sm' : ''}" id="mic" ${SR ? '' : 'disabled'}>${SR ? '🎤<br>Appuie et parle' : 'Micro<br>indisponible'}</button>
       <div class="heard" id="heard"></div>
       ${SR ? `<div class="lang"><span class="muted small" style="align-self:center">Micro :</span>
         <button data-l="fr-FR" class="${P.lang === 'fr-FR' ? '' : 'ghost'}">Français</button>
         <button data-l="en-US" class="${P.lang === 'en-US' ? '' : 'ghost'}">English</button></div>` : ''}
-      <form id="tf" class="row"><input id="tx" placeholder="Ou tape ta réponse" autocomplete="off"><button>Envoyer</button></form>
+      <form id="tf" class="row"><input id="tx" placeholder="Ou tape ta réponse" autocomplete="off"><button>Envoyer</button></form>` : ''}
     </div>`;
-    $('#mic').onclick = () => P.listening ? stopListening() : startListening();
+    const mic = $('#mic');
+    if(mic) mic.onclick = () => P.listening ? stopListening() : startListening();
     document.querySelectorAll('[data-l]').forEach(b => b.onclick = () => {
       P.lang = b.dataset.l; store('bt-lang', P.lang);
       document.querySelectorAll('[data-l]').forEach(x => x.className = x.dataset.l === P.lang ? '' : 'ghost');
     });
-    $('#tf').onsubmit = e => {
+    const tf = $('#tf');
+    if(tf) tf.onsubmit = e => {
       e.preventDefault(); const v = $('#tx').value.trim(); if(!v) return;
       send(v, [], true); $('#heard').textContent = '« ' + v + ' »'; $('#tx').value = '';
     };
     if(P.state) onState(P.state);
+    if(P.adm) onAdmin(P.adm);
   }
   function setStatus(html){ const el = $('#st'); if(el) el.innerHTML = html; }
 
   function onState(s){
-    if(!s || s.t !== 'state') return;
     const prev = P.state; P.state = s;
-    const sc = $('#sc'); if(!sc) return;
-    sc.textContent = s.score + ' pt' + (s.score > 1 ? 's' : '') + (s.count > 1 ? ` · ${s.rank}${s.rank === 1 ? 'er' : 'e'}/${s.count}` : '');
+    const sc = $('#sc');
+    if(sc && P.plays) sc.textContent = s.score + ' pt' + (s.score > 1 ? 's' : '') + (s.count > 1 && s.rank > 0 ? ` · ${s.rank}${s.rank === 1 ? 'er' : 'e'}/${s.count}` : '');
+    if(!$('#st')) return;
     const mine = k => s.found[k] === s.me;
     if(prev && prev.phase === 'playing' && s.phase === 'playing' && ((mine('artist') && prev.found.artist !== s.me) || (mine('title') && prev.found.title !== s.me))){
       try{ navigator.vibrate && navigator.vibrate([60, 40, 120]); }catch(e){}
       const st = $('#st'); st.classList.remove('flash'); void st.offsetWidth; st.classList.add('flash');
     }
-    if(!prev || prev.round !== s.round || prev.phase !== s.phase){ if(s.phase === 'playing' && (!prev || prev.round !== s.round)) $('#heard').textContent = ''; }
+    if(s.phase === 'playing' && (!prev || prev.round !== s.round)){ const h = $('#heard'); if(h) h.textContent = ''; }
     const slotChip = (k, label) => {
       const who = s.found[k];
       return `<span class="${who === s.me ? 'y' : ''}">${label} ${who ? (who === s.me ? '✓ toi !' : '✓ ' + esc(who)) : '…'}</span>`;
     };
-    if(s.phase === 'lobby') setStatus('<b>Tu es dans la partie 🎉</b><span class="muted small">En attente du lancement. Teste ton micro : ta phrase s’affiche sur la TV.</span>');
+    if(s.phase === 'lobby') setStatus(P.role === 'admin'
+      ? '<b>Prêt</b><span class="muted small">Teste ton micro : ta phrase s’affiche sur la TV.</span>'
+      : '<b>Tu es dans la partie 🎉</b><span class="muted small">En attente du lancement. Teste ton micro : ta phrase s’affiche sur la TV.</span>');
     else if(s.phase === 'playing') setStatus(`<b>Manche ${s.round} / ${s.total}</b><div class="st-slots">${slotChip('artist', 'Artiste')}${slotChip('title', 'Titre')}</div>`);
     else if(s.phase === 'reveal' && s.reveal) setStatus(`<div class="rev">${s.reveal.cover ? `<img src="${esc(s.reveal.cover)}" alt="">` : ''}<div><b>${esc(s.reveal.title)}</b><br><span class="muted">${esc(s.reveal.artist)}</span></div></div><div class="st-slots">${slotChip('artist', 'Artiste')}${slotChip('title', 'Titre')}</div>`);
     else if(s.phase === 'end') setStatus(`<b>Partie terminée !</b><span>Tu finis ${s.rank}${s.rank === 1 ? 'er 🏆' : 'e'} avec ${s.score} pt${s.score > 1 ? 's' : ''}</span>`);
   }
 
+  /* ---- Panneau animateur ---- */
+  function onAdmin(a){
+    P.adm = a;
+    const box = $('#adm'); if(!box) return;
+    const warn = a.unlocked ? '' : '<div class="warn">👆 Touche une fois l’écran de la tablette/TV pour y activer le son.</div>';
+    if(a.phase === 'lobby'){
+      if(P.admView !== 'lobby'){
+        P.admView = 'lobby';
+        box.innerHTML = `
+          <h3>🎛 Préparer la partie</h3>
+          <div id="awarn"></div>
+          <form id="as" class="row"><input id="aq" placeholder="Rechercher une playlist" value="${esc(a.q || '')}"><button>OK</button></form>
+          <div class="presets">${PRESETS.map(p => `<button type="button" class="ghost" data-c="search" data-q="${esc(p)}">${esc(p)}</button>`).join('')}</div>
+          <div class="ares" id="ares"></div>
+          <div id="achosen" class="small"></div>
+          <div class="row" style="align-items:center;justify-content:space-between;flex-wrap:wrap">
+            <label>Chansons <select id="an">${[10, 15, 20, 30].map(n => `<option>${n}</option>`).join('')}</select></label>
+            <label><input type="checkbox" id="aauto"> Enchaîner auto</label>
+          </div>
+          <button id="astart" style="padding:16px;font-size:1.1em">Lancer la partie ▶</button>
+          <div id="aplayers" class="small muted"></div>`;
+        $('#as').onsubmit = e => { e.preventDefault(); const q = $('#aq').value.trim(); if(q) cmd({c: 'search', q}); };
+        $('#an').onchange = e => cmd({c: 'set', n: +e.target.value});
+        $('#aauto').onchange = e => cmd({c: 'set', auto: e.target.checked});
+        $('#astart').onclick = () => cmd({c: 'start'});
+      }
+      $('#awarn').innerHTML = warn;
+      const r = a.results;
+      $('#ares').innerHTML = r === null || r === undefined ? '<span class="muted small">Cherche une playlist ou choisis un thème.</span>'
+        : r === 'loading' ? '<span class="muted small">Recherche…</span>'
+        : typeof r === 'string' ? `<span class="warn">${esc(r)}</span>`
+        : !r.length ? '<span class="muted small">Aucun résultat.</span>'
+        : r.map(x => `<button type="button" class="${a.playlist && a.playlist.id == x.id ? 'sel' : ''}" data-c="pick" data-id="${x.id}"><img src="${esc(x.pic)}" alt=""><span style="flex:1"><b>${esc(x.title)}</b><span>${x.nb} titres</span></span></button>`).join('');
+      $('#achosen').innerHTML = a.loading ? `<span class="muted">${esc(a.loading)}</span>`
+        : a.playlist ? `✅ <b>${esc(a.playlist.title)}</b> <span class="muted">(${a.playlist.count} extraits)</span>` : '<span class="muted">Aucune playlist choisie.</span>';
+      const an = $('#an'); if(an && document.activeElement !== an) an.value = String(a.n);
+      const aa = $('#aauto'); if(aa) aa.checked = !!a.auto;
+      $('#astart').disabled = !a.playlist || !!a.loading;
+      $('#aplayers').textContent = a.players && a.players.length ? 'Joueurs : ' + a.players.map(p => p.name).join(', ') : 'Aucun joueur pour l’instant.';
+      return;
+    }
+    if(a.phase === 'end'){
+      P.admView = 'end';
+      box.innerHTML = `<h3>🎛 Partie terminée</h3>${playersHTML(a, false)}<button data-c="lobby" style="padding:16px">Nouvelle partie</button>`;
+      return;
+    }
+    // playing / reveal
+    if(P.admRound !== a.round){ P.admRound = a.round; P.showAns = false; }
+    P.admView = 'game';
+    const rev = a.phase === 'reveal';
+    const t = a.track || {};
+    const showAns = rev || P.showAns || !P.plays;
+    const found = k => a.found && a.found[k] ? `✓ ${esc(a.found[k])}` : '…';
+    box.innerHTML = `
+      <h3>🎛 Manche ${a.round} / ${a.total}${a.paused ? ' · ⏸ en pause' : ''}</h3>
+      ${warn}
+      <div class="ans">${showAns
+        ? `${t.cover ? `<img src="${esc(t.cover)}" alt="">` : ''}<div><b>${esc(t.title)}</b><br><span class="muted">${esc(t.artist)}</span></div>`
+        : '<button type="button" class="ghost" data-c="__ans">👁 Voir la réponse</button>'}</div>
+      <div class="small muted">Artiste ${found('artist')} · Titre ${found('title')}</div>
+      <div class="abtns">
+        <button type="button" class="ghost" data-c="pause">${a.paused ? '▶ Reprendre' : '⏸ Pause'}</button>
+        <button type="button" data-c="next">${rev ? (a.round >= a.total ? 'Résultats ▶' : 'Suivant ▶') : 'Révéler'}</button>
+      </div>
+      ${a.feed && a.feed.length ? '<div class="afeed">' + a.feed.map(f => `<div><b>${esc(f.name)}</b><q>${esc(f.text)}</q>${f.got.length
+          ? f.got.map(g => `<span class="tag">${g === 'artist' ? 'artiste' : 'titre'} ✓</span>`).join('')
+          : (!rev ? ['artist', 'title'].filter(k => !(a.found && a.found[k])).map(k => `<button type="button" class="ghost" data-c="give" data-i="${f.id}" data-f="${k}">+ ${k === 'artist' ? 'artiste' : 'titre'}</button>`).join('') : '')}</div>`).join('') + '</div>' : ''}
+      ${playersHTML(a, true)}
+      <button type="button" class="ghost" data-c="quit">Terminer la partie</button>`;
+  }
+  function playersHTML(a, edit){
+    if(!a.players || !a.players.length) return '';
+    return '<div class="aplayers">' + a.players.map((p, i) => `<div class="${p.on ? '' : 'off'}"><span class="muted">${i + 1}</span><b>${esc(p.name)}</b>${edit ? `<button type="button" class="ghost" data-c="score" data-key="${esc(p.key)}" data-d="-1">−</button>` : ''}<s>${p.score}</s>${edit ? `<button type="button" class="ghost" data-c="score" data-key="${esc(p.key)}" data-d="1">+</button>` : ''}</div>`).join('') + '</div>';
+  }
+  document.addEventListener('click', e => {
+    const b = e.target.closest('[data-c]'); if(!b || b.disabled) return;
+    const d = b.dataset;
+    if(d.c === '__ans'){ P.showAns = true; if(P.adm) onAdmin(P.adm); return; }
+    if(d.c === 'quit' && !confirm('Terminer la partie maintenant ?')) return;
+    const o = {c: d.c};
+    if(d.q) o.q = d.q; if(d.id) o.id = d.id; if(d.i) o.i = d.i; if(d.f) o.f = d.f; if(d.key) o.key = d.key; if(d.d) o.d = +d.d;
+    if(d.c === 'search'){ const aq = $('#aq'); if(aq) aq.value = d.q; }
+    cmd(o);
+  });
+
+  /* ---- Micro ---- */
   function send(text, alts, final){
     if(P.conn && P.conn.open) try{ P.conn.send({t: 'answer', text, alts, final}); }catch(e){}
   }
@@ -629,20 +898,21 @@ function playerMain(){
         for(let j = 1; j < r.length; j++) alts.push(r[j].transcript);
       }
       text = text.trim(); if(!text) return;
-      $('#heard').textContent = '« ' + text + ' »';
+      const h = $('#heard'); if(h) h.textContent = '« ' + text + ' »';
       if(final){ sentFinal = true; send(text, alts, true); }
       else if(text !== lastSent){ lastSent = text; send(text, alts, false); }
     };
     rec.onerror = e => {
-      if(e.error === 'not-allowed' || e.error === 'service-not-allowed') $('#heard').textContent = 'Micro refusé : autorise-le dans les réglages du navigateur (et active Siri / Dictée sur iPhone).';
-      else if(e.error === 'no-speech') $('#heard').textContent = 'Je n’ai rien entendu, réessaie.';
+      const h = $('#heard'); if(!h) return;
+      if(e.error === 'not-allowed' || e.error === 'service-not-allowed') h.textContent = 'Micro refusé : autorise-le dans les réglages du navigateur (et active Siri / Dictée sur iPhone).';
+      else if(e.error === 'no-speech') h.textContent = 'Je n’ai rien entendu, réessaie.';
     };
     rec.onend = () => {
       if(!sentFinal && lastSent) send(lastSent, [], true);
       P.listening = false; const m = $('#mic'); if(m){ m.classList.remove('on'); m.innerHTML = '🎤<br>Appuie et parle'; }
     };
     try{ rec.start(); }catch(e){ return; }
-    P.listening = true; const m = $('#mic'); m.classList.add('on'); m.innerHTML = '👂<br>Je t’écoute…';
+    P.listening = true; const m = $('#mic'); if(m){ m.classList.add('on'); m.innerHTML = '👂<br>Je t’écoute…'; }
   }
   function stopListening(){ try{ P.rec && P.rec.stop(); }catch(e){} }
 
