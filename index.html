@@ -56,6 +56,8 @@ svg{display:block}
 .glare{background:linear-gradient(115deg,#FFFFFF12 0%,#FFFFFF05 28%,#FFFFFF00 29%);pointer-events:none}
 .tube{background-image:radial-gradient(circle,#FFFFFF 0 1.6px,#FFFFFF00 2.4px),radial-gradient(circle,#FFFFFFAA 0 1.1px,#FFFFFF00 1.9px),linear-gradient(180deg,#FFE9A6,#FFC23D 45%,#E08A1E);background-size:16px 17px,16px 11px,100% 100%;background-position:3px 0,-4px 5px,0 0;border-radius:8px;box-shadow:0 0 16px #FFC23D99,inset 0 0 0 1px #FFFFFF60;animation:bubbles 2.4s linear infinite}
 @keyframes bubbles{to{background-position:3px -68px,-4px -39px,0 0}}
+.neon{position:absolute;pointer-events:none;border:3px solid #FFF4DA;box-shadow:0 0 2px #FFF4DA,0 0 6px #FFC23D,0 0 14px #FFB020,0 0 30px #FF9A1ACC,inset 0 0 2px #FFF4DA,inset 0 0 8px #FFC23D,inset 0 0 18px #FFB02066}
+.neon-h{position:absolute;height:3px;border-radius:2px;background:#FFF4DA;box-shadow:0 0 2px #FFF4DA,0 0 6px #FFC23D,0 0 14px #FFB020,0 0 30px #FF9A1ACC}
 .chrome{background:conic-gradient(from 0deg,#FFF0B8,#B07A1C 25%,#FFE38E 45%,#8A5A10 70%,#FFF0B8)}
 .window{background:radial-gradient(circle,#FFB13D40 0%,#3C1644 70%)}
 .silver{background:linear-gradient(90deg,#8D8A86,#F2EFEA 45%,#A8A49E)}
@@ -125,7 +127,7 @@ body.host{height:100vh;overflow:hidden}
 .stage .b2{right:120px;top:-40px;width:440px;height:820px;opacity:.12;transform:rotate(26deg);transform-origin:50% 0}
 .stage .b3{left:500px;top:0;width:280px;height:720px;opacity:.1}
 .stage .floor{left:0;right:0;bottom:0;height:96px}
-.stage .floorline{left:0;right:0;bottom:94px;height:2px;background:var(--gold);opacity:.55;box-shadow:0 0 16px var(--gold)}
+.stage .floorline{left:40px;right:40px;bottom:94px;height:3px;border-radius:2px;background:#FFF4DA;box-shadow:0 0 2px #FFF4DA,0 0 6px #FFC23D,0 0 14px #FFB020,0 0 30px #FF9A1ACC}
 .stage .leds{left:150px;right:150px;bottom:74px;height:8px;opacity:.5}
 .stage .curtain-l{left:0;top:0;width:84px;height:720px;clip-path:polygon(0 0,100% 0,92% 30%,72% 60%,80% 100%,0 100%)}
 .stage .curtain-r{right:0;top:0;width:84px;height:720px;clip-path:polygon(100% 0,0 0,8% 30%,28% 60%,20% 100%,100% 100%)}
@@ -159,6 +161,9 @@ body.host{height:100vh;overflow:hidden}
 .cab{left:90px;right:90px;top:162px;height:346px;padding:7px;border-radius:70px 70px 24px 24px;box-shadow:0 0 0 2px #4A2E06,0 28px 60px #000D,0 0 90px #FFC23D30}
 .cabin{position:relative;height:100%;border-radius:64px 64px 18px 18px;display:flex;align-items:center;gap:36px;padding:0 50px 0 54px;box-shadow:inset 0 0 0 1px #FFE38E55,inset 0 10px 30px #000A}
 .cabin .glare{position:absolute;inset:0;border-radius:inherit}
+.cab .neon{inset:11px;border-radius:53px 53px 8px 8px}
+.prog .neon{inset:8px;border-radius:26px 26px 9px 9px}
+.mini .neon{inset:6px;border-radius:18px 18px 5px 5px}
 .cabin .tube{position:absolute;top:66px;bottom:24px;width:16px}
 .cabin .tube.l{left:14px}.cabin .tube.r{right:14px}
 .rec{width:272px;height:272px;flex:none;position:relative}
@@ -184,7 +189,7 @@ body.host{height:100vh;overflow:hidden}
 .board .chip{font-size:18px}
 .board .chip .av.xs{width:26px;height:26px}
 .field .fhead{display:flex;align-items:center;gap:12px;height:30px;margin-bottom:8px}
-.field .fbody{height:110px;display:flex;align-items:center}
+.field .fbody{height:100px;display:flex;align-items:center}
 .hintt{font-size:18px;font-weight:600;color:var(--sand)}
 
 /* Pastille « Bravo » */
@@ -275,7 +280,7 @@ body.host{height:100vh;overflow:hidden}
 .admline.off{opacity:.5}
 .mini-btn{font-family:var(--display);font-size:10px;padding:4px 8px;border-radius:6px;background:var(--red);color:var(--cream)}
 .prog{left:442px;right:96px;top:166px;height:428px;padding:7px;border-radius:40px 40px 22px 22px;box-shadow:0 0 0 2px #4A2E06,0 24px 50px #000C,0 0 80px #FFC23D26}
-.prog .cabin{flex-direction:column;align-items:stretch;justify-content:flex-start;gap:9px;padding:14px 44px 12px;border-radius:34px 34px 16px 16px}
+.prog .cabin{flex-direction:column;align-items:stretch;justify-content:flex-start;gap:9px;padding:20px 30px 16px;border-radius:34px 34px 16px 16px}
 .prog .tube{top:40px;bottom:20px}
 .p-head{display:flex;align-items:center;gap:12px;min-height:26px;position:relative}
 .p-head .chosen{flex:1;min-width:0;text-align:right;font-size:16px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;color:var(--cream)}
@@ -286,10 +291,10 @@ body.host{height:100vh;overflow:hidden}
 .results{flex:1;min-height:0;display:flex;gap:12px;overflow-x:auto;overflow-y:hidden;padding:4px 2px 6px;align-items:flex-start;position:relative;scrollbar-color:#C8901E #12061A;scrollbar-width:thin}
 .results .msg{font-size:17px;font-weight:600;color:var(--sand);margin:auto}
 .results .msg.warn{color:#FFD98A}
-.sleeve{flex:none;width:84px;text-align:left;color:var(--cream)}
-.sleeve img{width:84px;height:84px;border-radius:6px;object-fit:cover;box-shadow:0 6px 14px #000A;background:#2A1430}
-.sleeve b{font-size:13px;font-weight:700;line-height:1.1;margin-top:5px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
-.sleeve span{font-size:12px;color:var(--sand)}
+.sleeve{flex:none;width:78px;text-align:left;color:var(--cream)}
+.sleeve img{width:78px;height:78px;border-radius:6px;object-fit:cover;box-shadow:0 6px 14px #000A;background:#2A1430}
+.sleeve b{font-size:12px;font-weight:700;line-height:1.05;margin-top:4px;overflow:hidden;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical}
+.sleeve span{font-size:11px;color:var(--sand)}
 .sleeve.sel img{box-shadow:0 0 0 3px var(--gold),0 0 22px #FFC23D88}
 .p-foot{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px 14px;align-items:center;position:relative;border-top:1px solid #FFE38E33;padding-top:10px}
 .p-foot .o1,.p-foot .o2{display:flex;align-items:center;gap:10px}
@@ -352,7 +357,7 @@ body.ph{background:#0C0414;position:relative;min-height:100dvh}
 .ph-top .pelmet{height:16px}
 .ph-top .swags{height:14px;background-size:39px 14px}
 #app{position:relative;z-index:2}
-.phone{max-width:480px;margin:0 auto;padding:40px 20px 24px;display:flex;flex-direction:column;gap:14px;min-height:100dvh}
+.phone{max-width:480px;margin:0 auto;padding:24px 20px 24px;display:flex;flex-direction:column;gap:14px;min-height:100dvh}
 .phone .signwrap{margin-top:2px}
 .phone .sign{padding:9px;border-radius:56px 56px 12px 12px;background-size:26px 13px,26px 13px;background-position:0 0,13px 0;animation-name:chase-sm}
 @keyframes chase-sm{to{background-position:26px 0,39px 0}}
@@ -387,7 +392,7 @@ body.ph{background:#0C0414;position:relative;min-height:100dvh}
 .p-panel .ledbox.bump{animation:bump .9s ease}
 .regie-tag{font-family:var(--display);font-size:13px;color:var(--gold);border:2px solid var(--gold);border-radius:8px;padding:4px 8px}
 .mini{padding:5px;border-radius:28px 28px 14px 14px;box-shadow:0 0 0 1.5px #4A2E06,0 16px 30px #000C}
-.mini .cabin{border-radius:24px 24px 10px 10px;padding:14px;min-height:150px;display:flex;flex-direction:column;justify-content:center;align-items:stretch;gap:8px}
+.mini .cabin{border-radius:24px 24px 10px 10px;padding:18px 16px;min-height:150px;display:flex;flex-direction:column;justify-content:center;align-items:stretch;gap:8px}
 .mini.flash{animation:mflash .9s ease}
 @keyframes mflash{0%{box-shadow:0 0 0 4px var(--teal),0 0 50px var(--teal)}}
 .st{position:relative;display:flex;flex-direction:column;gap:8px}
@@ -695,8 +700,6 @@ function hostMain(){
     <div class="a rays" style="inset:0"></div><div class="a vignette" style="inset:0"></div><div class="a halo"></div>
     <div class="a beam b1"></div><div class="a beam b2"></div><div class="a beam b3"></div>
     <div class="a floor"></div><div class="a floorline"></div><div class="a leds"></div>
-    <div class="a curtain-l"></div><div class="a curtain-r"></div>
-    <div class="a pelmet"></div><div class="a swags"></div>
     <div class="scene" id="scene"></div>
     <div class="a" id="sticker"></div><div class="a" id="splash"></div>
   </div></div>`;
@@ -1078,7 +1081,7 @@ function hostMain(){
       </section>
       <section class="a prog cabinet" aria-label="Choix de la playlist">
         <div class="cabin cabinner">
-          <div class="glare"></div><div class="tube l"></div><div class="tube r"></div>
+          <div class="glare"></div><div class="neon"></div>
           <div class="p-head"><span class="plaque">LA PLAYLIST</span><div id="chosen" class="chosen">${chosenHTML()}</div></div>
           <form id="sform" class="p-search"><input class="inp" id="q" placeholder="Rechercher un thème, ou coller un lien Deezer" value="${esc(qVal)}" aria-label="Rechercher une playlist"><button class="btn-gold">CHERCHER</button></form>
           <div id="strips" class="strips">${stripsHTML()}</div>
@@ -1110,8 +1113,8 @@ function hostMain(){
     if(by) chip = `<span class="chip ok">${avHTML(by, 'xs')}trouvé par ${esc(by.name)}</span>`;
     else if(rev) chip = '<span class="chip none">personne !</span>';
     else chip = `<span class="hintt">${H.hint ? `${st.words} mot${st.words > 1 ? 's' : ''} · ${st.letters} lettre${st.letters > 1 ? 's' : ''}` : 'à trouver'}</span>`;
-    const body = shown ? tilesHTML(text, {maxW: 668, maxH: 108, max: 64, anim: H.anim[field]})
-      : (H.hint ? tilesHTML(maskOf(text), {maxW: 668, maxH: 108, max: 64}) : mysHTML());
+    const body = shown ? tilesHTML(text, {maxW: 668, maxH: 98, max: 64, anim: H.anim[field]})
+      : (H.hint ? tilesHTML(maskOf(text), {maxW: 668, maxH: 98, max: 64}) : mysHTML());
     return `<div class="field"><div class="fhead"><span class="plaque">${field === 'artist' ? 'ARTISTE' : 'TITRE'}</span>${chip}</div><div class="fbody">${body}</div></div>`;
   }
   function recHTML(t, rev){
@@ -1175,7 +1178,7 @@ function hostMain(){
           <div class="a screw goldlabel" style="left:5px;bottom:5px"></div><div class="a screw goldlabel" style="right:5px;bottom:5px"></div>
         </div>
         <div class="a cab cabinet"><div class="cabin cabinner">
-          <div class="glare"></div><div class="tube l"></div><div class="tube r"></div>
+          <div class="glare"></div><div class="neon"></div>
           <div class="rec" id="rec"></div>
           <div class="board" id="board"></div>
         </div></div>
@@ -1276,7 +1279,7 @@ function hostMain(){
    ===================================================================== */
 function playerMain(){
   document.body.classList.add('ph');
-  document.body.insertAdjacentHTML('afterbegin', '<div class="ph-bg"><div class="rays"></div><div class="vignette"></div><div class="cl"></div><div class="cr"></div></div><div class="ph-top"><div class="pelmet"></div><div class="swags"></div></div>');
+  document.body.insertAdjacentHTML('afterbegin', '<div class="ph-bg"><div class="rays"></div><div class="vignette"></div></div>');
   const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
   const saved = storeJSON('bt-av');
   const P = {
@@ -1422,7 +1425,7 @@ function playerMain(){
       <div class="p-lec" id="plec">${plecHTML()}</div>
       ${isAdm ? '<section class="regie" id="adm"><span class="note">Connexion…</span></section>' : ''}
       ${P.plays || !isAdm ? `
-      <section class="mini cabinet" id="mini"><div class="cabin cabinner"><div class="glare a" style="inset:0;border-radius:inherit"></div><div class="st" id="st"></div></div></section>
+      <section class="mini cabinet" id="mini"><div class="cabin cabinner"><div class="glare a" style="inset:0;border-radius:inherit"></div><div class="neon"></div><div class="st" id="st"></div></div></section>
       <div class="buzz ${isAdm ? 'sm' : ''}">
         <button class="dome-btn" id="mic" ${SR ? '' : 'disabled'} aria-label="Appuie et chante ta réponse">${SR ? micIdle() : '<span>MICRO<br>INDISPONIBLE</span>'}</button>
         <div class="lip blip"></div>
