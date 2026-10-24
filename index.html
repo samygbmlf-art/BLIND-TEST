@@ -1,0 +1,653 @@
+<!doctype html>
+<html lang="fr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#0d0b14">
+<title>Blind Test</title>
+<script src="https://unpkg.com/peerjs@1.5.4/dist/peerjs.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/qrcode-generator/1.4.4/qrcode.min.js"></script>
+<style>
+:root{
+  --bg:#0d0b14; --panel:#17142a; --panel2:#211d3a; --line:#2e2950;
+  --text:#f3f0ff; --muted:#9b94c4; --accent:#ff3d7f; --accent2:#7c5cff;
+  --ok:#2ee59d; --warn:#ffb020;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%}
+body{background:var(--bg);color:var(--text);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;-webkit-tap-highlight-color:transparent}
+button{font:inherit;cursor:pointer;border:0;border-radius:12px;padding:.7em 1.1em;background:var(--accent);color:#fff;font-weight:700}
+button:disabled{opacity:.35;cursor:default}
+button.ghost{background:var(--panel2);color:var(--text);font-weight:600}
+input,select{font:inherit;color:var(--text);background:var(--panel2);border:1px solid var(--line);border-radius:12px;padding:.7em .9em;min-width:0}
+input:focus{outline:2px solid var(--accent2)}
+.muted{color:var(--muted)} .small{font-size:.85em}
+.row{display:flex;gap:.5em} .row input{flex:1}
+.warn{background:#3a2a05;color:var(--warn);padding:.6em .8em;border-radius:10px;font-size:.85em}
+
+/* ---------- TV ---------- */
+.tv{min-height:100vh;display:grid;gap:2vw;padding:2.5vw;font-size:clamp(14px,1.25vw,26px)}
+.lobby{grid-template-columns:minmax(280px,1fr) 1.6fr}
+.join{background:var(--panel);border-radius:24px;padding:2vw;display:flex;flex-direction:column;align-items:center;gap:.8em;text-align:center}
+.join h1{font-size:2.6em;letter-spacing:-.02em;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.qr{background:#fff;border-radius:18px;padding:12px;line-height:0}
+.qr img{width:min(22vw,320px);height:auto;image-rendering:pixelated}
+.code{font-size:3em;font-weight:800;letter-spacing:.15em}
+.join h2,.setup h2{font-size:1.2em;margin-top:.6em}
+.chips{display:flex;flex-wrap:wrap;gap:.5em;justify-content:center}
+.chip{background:var(--panel2);border-radius:999px;padding:.4em .9em;display:flex;align-items:center;gap:.5em}
+.chip i{width:.7em;height:.7em;border-radius:50%;display:inline-block}
+.chip em{color:var(--muted);font-size:.8em}
+.off{opacity:.4}
+.setup{background:var(--panel);border-radius:24px;padding:2vw;display:flex;flex-direction:column;gap:.9em;min-height:0}
+.presets{display:flex;flex-wrap:wrap;gap:.4em}
+.presets button{padding:.45em .8em;font-size:.9em}
+.results{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:.8em;overflow:auto;max-height:42vh;padding-right:.3em}
+.card{background:var(--panel2);border-radius:14px;padding:.5em;cursor:pointer;border:2px solid transparent;text-align:left;color:var(--text);font-weight:500}
+.card:hover{border-color:var(--accent2)}
+.card.sel{border-color:var(--accent)}
+.card img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:10px;display:block;margin-bottom:.4em}
+.card b{display:block;font-size:.9em;line-height:1.2}
+.card span{font-size:.75em;color:var(--muted)}
+.launch{margin-top:auto;display:flex;flex-wrap:wrap;align-items:center;gap:1em;border-top:1px solid var(--line);padding-top:1em}
+.launch #chosen{flex:1 1 100%}
+button.big{font-size:1.2em;padding:.8em 1.6em;margin-left:auto}
+
+.game{grid-template-columns:1fr minmax(240px,24vw)}
+.game main{display:flex;flex-direction:column;gap:1.4em;min-width:0}
+.top{display:flex;justify-content:space-between;font-size:1.3em;font-weight:700}
+.bar{height:10px;background:var(--panel2);border-radius:99px;overflow:hidden}
+.bar i{display:block;height:100%;width:0;background:linear-gradient(90deg,var(--accent2),var(--accent))}
+.stage{display:flex;gap:3vw;align-items:center}
+.cover{width:min(28vw,46vh);aspect-ratio:1;flex:none;border-radius:24px;background:var(--panel);display:grid;place-items:center;overflow:hidden;box-shadow:0 20px 60px #0008}
+.cover span{font-size:8em;font-weight:900;color:var(--line);animation:pulse 1.2s ease-in-out infinite}
+.cover img{width:100%;height:100%;object-fit:cover;animation:pop .5s ease}
+@keyframes pulse{50%{transform:scale(1.08);color:var(--accent2)}}
+@keyframes pop{from{transform:scale(.8);opacity:0}}
+.slots{flex:1;display:flex;flex-direction:column;gap:1.2em;min-width:0}
+.slot{background:var(--panel);border-radius:20px;padding:1em 1.4em;border:2px solid transparent}
+.slot.found{border-color:var(--ok)}
+.slot label{font-size:.9em;text-transform:uppercase;letter-spacing:.12em;color:var(--muted)}
+.slot div{font-size:2.6em;font-weight:800;line-height:1.1;overflow-wrap:anywhere}
+.slot .hid{color:var(--line)}
+.slot small{display:block;margin-top:.3em;color:var(--ok);font-weight:700}
+.feed{display:flex;flex-direction:column;gap:.4em;min-height:8em}
+.fi{background:var(--panel);border-radius:12px;padding:.45em .8em;display:flex;flex-wrap:wrap;align-items:center;gap:.5em}
+.fi.ok{background:#0f2e24}
+.fi q{color:var(--muted);font-style:italic}
+.tag{background:var(--ok);color:#04150e;border-radius:99px;padding:.1em .6em;font-size:.8em;font-weight:800}
+.fi button{padding:.25em .7em;font-size:.8em;margin-left:auto}
+.fi button+button{margin-left:0}
+.ctrl{display:flex;gap:.6em;margin-top:auto}
+.board{background:var(--panel);border-radius:24px;padding:1.4em;display:flex;flex-direction:column;gap:.5em;overflow:auto}
+.board h2{font-size:1.2em;margin-bottom:.4em}
+.pl{display:flex;align-items:center;gap:.6em;padding:.5em .7em;border-radius:12px;background:var(--panel2)}
+.pl .r{width:1.6em;color:var(--muted);font-weight:700}
+.pl i{width:.8em;height:.8em;border-radius:50%}
+.pl b{flex:1;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.pl s{text-decoration:none;font-weight:800;font-size:1.3em}
+
+.end{grid-template-columns:1fr;place-items:center;text-align:center;align-content:center;gap:1.5em}
+.end h1{font-size:3.4em}
+.podium{display:flex;align-items:flex-end;gap:1.5vw;justify-content:center}
+.podium div{background:var(--panel);border-radius:20px 20px 0 0;width:min(18vw,240px);padding:1em;display:flex;flex-direction:column;justify-content:flex-end;gap:.3em}
+.podium b{font-size:1.5em} .podium s{text-decoration:none;font-size:2em;font-weight:900}
+.podium .p1{height:34vh;background:linear-gradient(var(--accent),var(--accent2))}
+.podium .p2{height:26vh} .podium .p3{height:20vh}
+
+/* ---------- PHONE ---------- */
+.phone{min-height:100dvh;display:flex;flex-direction:column;gap:14px;padding:16px;max-width:520px;margin:0 auto}
+.phone h1{font-size:1.8em;background:linear-gradient(90deg,var(--accent),var(--accent2));-webkit-background-clip:text;background-clip:text;color:transparent}
+.hdr{display:flex;justify-content:space-between;align-items:center;background:var(--panel);border-radius:16px;padding:12px 14px}
+.hdr b{font-size:1.1em} .hdr span{font-weight:800;font-size:1.3em}
+.status{background:var(--panel);border-radius:16px;padding:14px;text-align:center;min-height:5.5em;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:8px}
+.st-slots{display:flex;gap:8px;justify-content:center;flex-wrap:wrap}
+.st-slots span{background:var(--panel2);border-radius:99px;padding:4px 12px;font-size:.9em}
+.st-slots span.y{background:var(--ok);color:#04150e;font-weight:800}
+.rev{display:flex;gap:12px;align-items:center;text-align:left}
+.rev img{width:64px;height:64px;border-radius:10px}
+.mic{align-self:center;width:min(62vw,240px);aspect-ratio:1;border-radius:50%;font-size:1.25em;line-height:1.25;background:radial-gradient(circle at 35% 30%,#ff6a9c,var(--accent) 60%,#c4135a);box-shadow:0 14px 40px #ff3d7f55;user-select:none;-webkit-user-select:none;touch-action:manipulation;margin:6px 0}
+.mic.on{background:radial-gradient(circle at 35% 30%,#7dffc9,var(--ok) 60%,#11a56c);color:#04150e;animation:ring 1s ease-out infinite}
+@keyframes ring{0%{box-shadow:0 0 0 0 #2ee59d99}100%{box-shadow:0 0 0 28px #2ee59d00}}
+.heard{text-align:center;min-height:1.6em;font-size:1.15em;font-style:italic;color:var(--muted)}
+.lang{display:flex;justify-content:center;gap:6px}
+.lang button{padding:6px 12px;font-size:.85em}
+.lang button.ghost{opacity:.7}
+.flash{animation:flash .6s ease}
+@keyframes flash{0%{background:var(--ok)}}
+</style>
+</head>
+<body>
+<div id="app"></div>
+<script>
+'use strict';
+/* =====================================================================
+   Blind Test — un seul fichier.
+   Sans paramètre : écran TV (hôte).  Avec ?room=CODE : page joueur.
+   ===================================================================== */
+const $ = s => document.querySelector(s);
+const app = $('#app');
+const PREFIX = 'bbbt-v1-';
+const COLORS = ['#ff3d7f','#7c5cff','#2ee59d','#ffb020','#29b6f6','#ff7043','#ec5bff','#c6ff00','#00e5c4','#ff5252'];
+const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function store(k, v){ try{ if(v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); }catch(e){ return null; } }
+
+/* ---------------- Correspondance tolérante des réponses ---------------- */
+const STOP = new Set(['the','le','la','les','l','un','une','a','et','and','de','du','des','d','of']);
+function norm(s){
+  return String(s || '').toLowerCase()
+    .normalize('NFD').replace(/[\u0300-\u036f]/g, '')
+    .replace(/\(.*?\)|\[.*?\]/g, ' ')
+    .replace(/\b(feat|ft|featuring)\b.*$/, ' ')
+    .replace(/&/g, ' et ')
+    .replace(/[^a-z0-9 ]+/g, ' ')
+    .replace(/\s+/g, ' ').trim();
+}
+function words(s){ return norm(s).split(' ').filter(Boolean); }
+function core(s){ const w = words(s); const f = w.filter(x => !STOP.has(x)); return f.length ? f : w; }
+function squash(s){ // phonétique très simplifiée, utile pour fr-FR qui écrit les noms anglais « à l'oreille »
+  return s.replace(/ph/g,'f').replace(/qu|ck|q|c(?=[aou])/g,'k').replace(/y/g,'i')
+          .replace(/ee|ea/g,'i').replace(/oo/g,'ou').replace(/w/g,'ou').replace(/h/g,'')
+          .replace(/(.)\1+/g,'$1').replace(/[esxtdz]$/,'');
+}
+function lev(a, b){
+  if(a === b) return 0;
+  let prev = Array.from({length: b.length + 1}, (_, i) => i);
+  for(let i = 1; i <= a.length; i++){
+    const cur = [i];
+    for(let j = 1; j <= b.length; j++)
+      cur[j] = Math.min(prev[j] + 1, cur[j-1] + 1, prev[j-1] + (a[i-1] === b[j-1] ? 0 : 1));
+    prev = cur;
+  }
+  return prev[b.length];
+}
+function sim(a, b){ const m = Math.max(a.length, b.length); return m ? 1 - lev(a, b) / m : 1; }
+function matches(said, target){
+  const tw = core(target); if(!tw.length) return false;
+  const tj = squash(tw.join(''));
+  const raw = words(said);
+  const sw = raw.filter(w => !STOP.has(w));
+  if(!raw.length) return false;
+  if(norm(said).includes(norm(target))) return true;
+  const short = tj.length <= 3;
+  const thr = tj.length <= 6 ? 0.8 : 0.72;
+  for(const list of [sw, raw]){
+    const n = tw.length;
+    for(let len = Math.max(1, n - 1); len <= n + 1; len++){
+      for(let i = 0; i + len <= list.length; i++){
+        const cand = squash(list.slice(i, i + len).join(''));
+        if(short ? cand === tj : sim(cand, tj) >= thr) return true;
+      }
+    }
+  }
+  return false;
+}
+
+const ROOM = (new URLSearchParams(location.search).get('room') || '').toUpperCase().replace(/[^A-Z0-9]/g, '');
+if(ROOM) playerMain(); else hostMain();
+
+/* =====================================================================
+   ÉCRAN TV (HÔTE)
+   ===================================================================== */
+function hostMain(){
+  const PRESETS = ['Années 80','Années 90','Années 2000','Hits du moment','Variété française','Rap français','Rock classique','Disney','Disco','Génériques TV'];
+  const H = {
+    code: '', peer: null, online: false, err: '',
+    players: new Map(), phase: 'lobby', tracks: [], idx: -1, cur: null,
+    found: {artist: null, title: null}, feed: [], feedId: 0,
+    q: '', results: null, playlist: null, loading: '', n: 15, auto: true,
+    audio: new Audio(), ctx: null, nextTO: 0, revealTO: 0, roundToken: 0
+  };
+  H.audio.preload = 'auto';
+  H.audio.addEventListener('ended', () => { if(H.phase === 'playing') reveal(); });
+  H.audio.addEventListener('play', () => H.phase !== 'lobby' && H.phase !== 'end' && updateCtrl());
+  H.audio.addEventListener('pause', () => H.phase !== 'lobby' && H.phase !== 'end' && updateCtrl());
+
+  const title = t => t.title_short || t.title || '';
+  const cover = t => (t.album && (t.album.cover_xl || t.album.cover_big || t.album.cover_medium)) || '';
+  const joinUrl = () => location.href.split(/[?#]/)[0] + '?room=' + H.code;
+  const ranked = () => [...H.players.values()].sort((a, b) => b.score - a.score);
+
+  /* ---- Réseau ---- */
+  function genCode(){ const A = 'ABCDEFGHJKLMNPQRSTUVWXYZ23456789'; let s = ''; for(let i = 0; i < 4; i++) s += A[Math.floor(Math.random() * A.length)]; return s; }
+  function connectPeer(){
+    if(H.peer) try{ H.peer.destroy(); }catch(e){}
+    H.code = genCode(); H.online = false; H.err = '';
+    const peer = new Peer(PREFIX + H.code, {debug: 0});
+    H.peer = peer;
+    peer.on('open', () => { H.online = true; if(H.phase === 'lobby') renderLobby(); });
+    peer.on('error', e => {
+      if(e.type === 'unavailable-id') return connectPeer();
+      if(e.type === 'peer-unavailable') return;
+      H.err = 'Réseau : ' + e.type; const n = $('#net'); if(n) n.textContent = H.err;
+    });
+    peer.on('disconnected', () => { try{ peer.reconnect(); }catch(e){} });
+    peer.on('connection', c => {
+      c.on('data', d => hostData(c, d));
+      c.on('close', () => { const p = c.pkey && H.players.get(c.pkey); if(p && p.conn === c){ p.conn = null; refresh(); } });
+    });
+  }
+  function hostData(c, d){
+    if(!d || typeof d !== 'object') return;
+    if(d.t === 'hello'){
+      const name = String(d.name || '').trim().slice(0, 16) || 'Joueur';
+      const k = name.toLowerCase();
+      let p = H.players.get(k);
+      if(!p){ p = {name, key: k, score: 0, color: COLORS[H.players.size % COLORS.length], last: ''}; H.players.set(k, p); }
+      if(p.conn && p.conn !== c) try{ p.conn.close(); }catch(e){}
+      p.conn = c; c.pkey = k;
+      refresh(); sendState(p);
+    } else if(d.t === 'answer'){
+      const p = H.players.get(c.pkey); if(p) onAnswer(p, d);
+    }
+  }
+  function sendState(p){
+    if(!p.conn || !p.conn.open) return;
+    const r = ranked(); const t = H.cur;
+    const showRev = t && (H.phase === 'reveal' || H.phase === 'end');
+    try{
+      p.conn.send({
+        t: 'state', phase: H.phase, round: H.idx + 1, total: H.tracks.length,
+        score: p.score, rank: r.indexOf(p) + 1, count: r.length, me: p.name,
+        found: {artist: H.found.artist, title: H.found.title},
+        reveal: showRev ? {artist: t.artist.name, title: title(t), cover: t.album && t.album.cover_medium} : null
+      });
+    }catch(e){}
+  }
+  const broadcast = () => H.players.forEach(sendState);
+
+  /* ---- Deezer (JSONP, pas de clé nécessaire) ---- */
+  let jsonpN = 0;
+  function dz(path){
+    return new Promise((res, rej) => {
+      const cb = '__dz' + (++jsonpN) + '_' + Date.now();
+      const s = document.createElement('script');
+      const done = () => { clearTimeout(to); try{ delete window[cb]; }catch(e){ window[cb] = undefined; } s.remove(); };
+      const to = setTimeout(() => { done(); rej(new Error('Deezer ne répond pas')); }, 12000);
+      window[cb] = d => { done(); (d && d.error) ? rej(new Error(d.error.message || 'Erreur Deezer')) : res(d); };
+      s.onerror = () => { done(); rej(new Error('Deezer injoignable')); };
+      s.src = 'https://api.deezer.com' + path + (path.includes('?') ? '&' : '?') + 'output=jsonp&callback=' + cb;
+      document.head.appendChild(s);
+    });
+  }
+  async function search(q){
+    q = q.trim(); if(!q) return;
+    H.q = q; H.results = 'loading'; updateResults();
+    try{ const d = await dz('/search/playlist?q=' + encodeURIComponent(q) + '&limit=30'); H.results = d.data || []; }
+    catch(e){ H.results = e.message; }
+    updateResults();
+  }
+  async function pick(id){
+    H.loading = 'Chargement de la playlist…'; updateChosen();
+    try{
+      const [info, tr] = await Promise.all([dz('/playlist/' + id), dz('/playlist/' + id + '/tracks?limit=1000')]);
+      const tracks = (tr.data || []).filter(t => t.readable !== false && t.preview && t.artist);
+      if(tracks.length < 3) throw new Error('Pas assez de titres lisibles dans cette playlist');
+      H.playlist = {id, title: info.title, picture: info.picture_medium, tracks};
+      H.loading = '';
+    }catch(e){ H.loading = '⚠ ' + e.message; }
+    renderLobby();
+  }
+
+  /* ---- Partie ---- */
+  function shuffle(a){ a = a.slice(); for(let i = a.length - 1; i > 0; i--){ const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+  function ding(freqs){
+    try{
+      if(!H.ctx) H.ctx = new (window.AudioContext || window.webkitAudioContext)();
+      const t0 = H.ctx.currentTime;
+      (freqs || [880, 1320]).forEach((f, i) => {
+        const o = H.ctx.createOscillator(), g = H.ctx.createGain();
+        o.frequency.value = f; o.type = 'triangle';
+        g.gain.setValueAtTime(0.0001, t0 + i * .09); g.gain.exponentialRampToValueAtTime(.25, t0 + i * .09 + .02);
+        g.gain.exponentialRampToValueAtTime(0.0001, t0 + i * .09 + .35);
+        o.connect(g).connect(H.ctx.destination); o.start(t0 + i * .09); o.stop(t0 + i * .09 + .4);
+      });
+    }catch(e){}
+  }
+  function startGame(){
+    if(!H.playlist) return;
+    H.n = +($('#n') ? $('#n').value : H.n); H.auto = $('#auto') ? $('#auto').checked : H.auto;
+    ding([660]); // débloque l'audio sur geste utilisateur
+    H.tracks = shuffle(H.playlist.tracks).slice(0, H.n);
+    H.players.forEach(p => { p.score = 0; p.last = ''; });
+    H.idx = -1; H.cur = null;
+    startRound();
+  }
+  async function startRound(){
+    clearTimeout(H.nextTO); clearTimeout(H.revealTO);
+    const token = ++H.roundToken;
+    H.idx++;
+    if(H.idx >= H.tracks.length) return endGame();
+    let t = H.tracks[H.idx];
+    try{ const fresh = await dz('/track/' + t.id); if(fresh && fresh.preview) t = fresh; }catch(e){} // liens d'extraits frais (ils expirent)
+    if(token !== H.roundToken) return;
+    if(!t.preview) return startRound();
+    H.cur = t; H.found = {artist: null, title: null}; H.feed = []; H.phase = 'playing';
+    H.audio.src = t.preview; H.audio.currentTime = 0;
+    renderGame(); broadcast();
+    try{ await H.audio.play(); }catch(e){ const b = $('#pausebtn'); if(b) b.textContent = '▶ Lancer le son'; }
+  }
+  function reveal(){
+    if(H.phase !== 'playing') return;
+    clearTimeout(H.revealTO);
+    H.phase = 'reveal'; renderGame(); broadcast();
+    if(H.auto) H.nextTO = setTimeout(next, 8000);
+  }
+  function next(){
+    clearTimeout(H.nextTO); clearTimeout(H.revealTO);
+    if(H.phase === 'playing') return reveal();
+    if(H.phase === 'reveal') startRound();
+  }
+  function endGame(){
+    clearTimeout(H.nextTO); clearTimeout(H.revealTO); H.roundToken++;
+    H.audio.pause(); H.phase = 'end'; renderEnd(); broadcast(); ding([523, 659, 784, 1046]);
+  }
+  function backToLobby(){ H.phase = 'lobby'; H.cur = null; H.players.forEach(p => p.score = 0); renderLobby(); broadcast(); }
+  function award(p, field){
+    if(H.phase !== 'playing' || H.found[field] || !p) return false;
+    H.found[field] = p.name; p.score++; ding();
+    if(H.found.artist && H.found.title) H.revealTO = setTimeout(reveal, 1500);
+    return true;
+  }
+  function onAnswer(p, d){
+    const text = String(d.text || '').slice(0, 120);
+    if(H.phase === 'lobby'){ if(d.final){ p.last = text; refresh(); } return; }
+    if(H.phase !== 'playing' || !H.cur) return;
+    const texts = [text, ...(Array.isArray(d.alts) ? d.alts : [])].map(s => String(s).slice(0, 120)).filter(Boolean);
+    const got = [];
+    for(const field of ['artist', 'title']){
+      if(H.found[field]) continue;
+      const target = field === 'artist' ? H.cur.artist.name : title(H.cur);
+      if(texts.some(s => matches(s, target)) && award(p, field)) got.push(field);
+    }
+    if(d.final || got.length){
+      H.feed.push({id: ++H.feedId, key: p.key, text, got});
+      if(H.feed.length > 30) H.feed.shift();
+    }
+    if(d.final || got.length){ renderGame(); }
+    if(got.length) broadcast();
+  }
+
+  /* ---- Rendu ---- */
+  function refresh(){
+    if(H.phase === 'lobby'){ const el = $('#chips'); el ? (el.innerHTML = chipsHTML()) : renderLobby(); }
+    else if(H.phase === 'end') renderEnd();
+    else renderGame();
+  }
+  function qrImg(url){
+    try{ const q = qrcode(0, 'M'); q.addData(url); q.make(); return '<img alt="QR code" src="' + q.createDataURL(8, 2) + '">'; }
+    catch(e){ return ''; }
+  }
+  function chipsHTML(){
+    if(!H.players.size) return '<span class="muted">Scanne le QR code pour rejoindre</span>';
+    return [...H.players.values()].map(p => `<span class="chip ${p.conn ? '' : 'off'}"><i style="background:${p.color}"></i>${esc(p.name)}${p.last ? ` <em>« ${esc(p.last)} »</em>` : ''}</span>`).join('');
+  }
+  function resultsHTML(){
+    const r = H.results;
+    if(r === null) return '<span class="muted">Cherche une playlist ou choisis un thème.</span>';
+    if(r === 'loading') return '<span class="muted">Recherche…</span>';
+    if(typeof r === 'string') return '<span class="warn">' + esc(r) + '</span>';
+    if(!r.length) return '<span class="muted">Aucun résultat.</span>';
+    return r.map(p => `<button class="card ${H.playlist && H.playlist.id == p.id ? 'sel' : ''}" data-act="pick" data-id="${p.id}"><img loading="lazy" src="${esc(p.picture_medium)}" alt=""><b>${esc(p.title)}</b><span>${p.nb_tracks} titres</span></button>`).join('');
+  }
+  function chosenHTML(){
+    if(H.loading) return `<span class="muted">${esc(H.loading)}</span>`;
+    if(!H.playlist) return '<span class="muted">Aucune playlist choisie.</span>';
+    return `Playlist : <b>${esc(H.playlist.title)}</b> <span class="muted">(${H.playlist.tracks.length} extraits disponibles)</span>`;
+  }
+  const updateResults = () => { const el = $('#results'); if(el) el.innerHTML = resultsHTML(); };
+  const updateChosen = () => { const el = $('#chosen'); if(el) el.innerHTML = chosenHTML(); };
+  const netText = () => H.err || (H.online ? '🟢 Prêt — les joueurs peuvent rejoindre' : 'Connexion au réseau…');
+
+  function renderLobby(){
+    const qVal = $('#q') ? $('#q').value : H.q;
+    app.innerHTML = `
+    <div class="tv lobby">
+      <section class="join">
+        <h1>Blind Test</h1>
+        <div class="qr">${H.online ? qrImg(joinUrl()) : '<div style="width:min(22vw,320px);aspect-ratio:1"></div>'}</div>
+        <div class="code">${esc(H.code)}</div>
+        <div class="muted small" style="word-break:break-all">${esc(joinUrl())}</div>
+        <div id="net" class="muted small">${esc(netText())}</div>
+        ${location.protocol === 'file:' ? '<div class="warn">Page ouverte en local : les téléphones ne pourront pas la rejoindre. Héberge-la en HTTPS (GitHub Pages).</div>' : ''}
+        <h2>Joueurs</h2>
+        <div id="chips" class="chips">${chipsHTML()}</div>
+      </section>
+      <section class="setup">
+        <h2>Playlist Deezer</h2>
+        <form id="sform" class="row"><input id="q" placeholder="Rechercher : années 80, rap français…" value="${esc(qVal)}"><button>Chercher</button></form>
+        <div class="presets">${PRESETS.map(p => `<button class="ghost" data-act="preset" data-q="${esc(p)}">${esc(p)}</button>`).join('')}</div>
+        <form id="uform" class="row"><input id="url" placeholder="…ou colle un lien de playlist Deezer"><button class="ghost">Charger</button></form>
+        <div id="results" class="results">${resultsHTML()}</div>
+        <div class="launch">
+          <div id="chosen">${chosenHTML()}</div>
+          <label>Chansons <select id="n">${[10, 15, 20, 30].map(n => `<option ${n === H.n ? 'selected' : ''}>${n}</option>`).join('')}</select></label>
+          <label><input type="checkbox" id="auto" ${H.auto ? 'checked' : ''}> Enchaîner automatiquement</label>
+          <button class="big" data-act="start" ${H.playlist && !H.loading ? '' : 'disabled'}>Lancer la partie ▶</button>
+        </div>
+      </section>
+    </div>`;
+    $('#sform').onsubmit = e => { e.preventDefault(); search($('#q').value); };
+    $('#uform').onsubmit = e => {
+      e.preventDefault();
+      const v = $('#url').value.trim(); const m = v.match(/playlist\/(\d+)/) || v.match(/^(\d{4,})$/);
+      if(m) pick(m[1]); else { H.loading = '⚠ Lien non reconnu : ouvre-le dans le navigateur et copie l’adresse complète (…/playlist/123456).'; updateChosen(); }
+    };
+  }
+  function slot(label, value, who, rev){
+    const show = who || rev;
+    return `<div class="slot ${who ? 'found' : ''}"><label>${label}</label><div class="${show ? '' : 'hid'}">${show ? esc(value) : '? ? ?'}</div>${who ? `<small>✓ ${esc(who)}</small>` : ''}</div>`;
+  }
+  function boardHTML(){
+    return '<h2>Classement</h2>' + (ranked().map((p, i) => `<div class="pl ${p.conn ? '' : 'off'}"><span class="r">${i + 1}</span><i style="background:${p.color}"></i><b>${esc(p.name)}</b><s>${p.score}</s></div>`).join('') || '<span class="muted">Aucun joueur</span>');
+  }
+  function feedHTML(f){
+    const p = H.players.get(f.key); if(!p) return '';
+    const btns = (!f.got.length && H.phase === 'playing')
+      ? ['artist', 'title'].filter(k => !H.found[k]).map(k => `<button class="ghost" data-act="give" data-i="${f.id}" data-f="${k}">+ ${k === 'artist' ? 'artiste' : 'titre'}</button>`).join('')
+      : '';
+    return `<div class="fi ${f.got.length ? 'ok' : ''}"><b style="color:${p.color}">${esc(p.name)}</b><q>${esc(f.text)}</q>${f.got.map(g => `<span class="tag">${g === 'artist' ? 'artiste' : 'titre'} ✓</span>`).join('')}${btns}</div>`;
+  }
+  function renderGame(){
+    const t = H.cur; if(!t) return;
+    const rev = H.phase === 'reveal';
+    app.innerHTML = `
+    <div class="tv game">
+      <main>
+        <div class="top"><span>Manche ${H.idx + 1} / ${H.tracks.length}</span><span class="muted">Code ${esc(H.code)}</span></div>
+        <div class="bar"><i id="prog"></i></div>
+        <div class="stage">
+          <div class="cover">${rev ? `<img src="${esc(cover(t))}" alt="">` : '<span>?</span>'}</div>
+          <div class="slots">${slot('Artiste', t.artist.name, H.found.artist, rev)}${slot('Titre', title(t), H.found.title, rev)}</div>
+        </div>
+        <div class="feed">${H.feed.slice(-5).reverse().map(feedHTML).join('')}</div>
+        <div class="ctrl">
+          <button class="ghost" id="pausebtn" data-act="pause">${H.audio.paused ? '▶ Reprendre' : '⏸ Pause'}</button>
+          <button data-act="next">${rev ? (H.idx + 1 >= H.tracks.length ? 'Résultats ▶' : 'Suivant ▶') : 'Révéler'}</button>
+          <button class="ghost" data-act="quit" style="margin-left:auto">Terminer la partie</button>
+        </div>
+      </main>
+      <aside class="board">${boardHTML()}</aside>
+    </div>`;
+  }
+  function updateCtrl(){ const b = $('#pausebtn'); if(b) b.textContent = H.audio.paused ? '▶ Reprendre' : '⏸ Pause'; }
+  function renderEnd(){
+    const r = ranked();
+    const pod = [r[1], r[0], r[2]].map((p, i) => p ? `<div class="p${[2, 1, 3][i]}"><span>${[2, 1, 3][i]}${[2, 1, 3][i] === 1 ? 'er' : 'e'}</span><b>${esc(p.name)}</b><s>${p.score}</s></div>` : '').join('');
+    app.innerHTML = `
+    <div class="tv end">
+      <h1>🏆 ${r[0] ? esc(r[0].name) + ' gagne !' : 'Partie terminée'}</h1>
+      <div class="podium">${pod}</div>
+      <div class="muted">${r.slice(3).map((p, i) => `${i + 4}. ${esc(p.name)} — ${p.score}`).join(' · ')}</div>
+      <div class="ctrl"><button data-act="lobby">Nouvelle partie</button></div>
+    </div>`;
+  }
+  (function tick(){
+    const el = $('#prog');
+    if(el && H.audio.duration) el.style.width = Math.min(100, H.audio.currentTime / H.audio.duration * 100) + '%';
+    requestAnimationFrame(tick);
+  })();
+
+  /* ---- Actions ---- */
+  const ACT = {
+    preset: d => { const q = $('#q'); if(q) q.value = d.q; search(d.q); },
+    pick: d => pick(d.id),
+    start: startGame,
+    next,
+    quit: endGame,
+    lobby: backToLobby,
+    pause: () => {
+      if(H.audio.paused){ H.audio.play().catch(() => {}); if(H.phase === 'reveal' && H.auto) H.nextTO = setTimeout(next, 8000); }
+      else { H.audio.pause(); clearTimeout(H.nextTO); }
+    },
+    give: d => {
+      const f = H.feed.find(x => x.id == d.i); if(!f) return;
+      const p = H.players.get(f.key);
+      if(award(p, d.f)){ f.got.push(d.f); renderGame(); broadcast(); }
+    }
+  };
+  document.addEventListener('click', e => { const a = e.target.closest('[data-act]'); if(a && !a.disabled && ACT[a.dataset.act]) ACT[a.dataset.act](a.dataset); });
+  document.addEventListener('keydown', e => {
+    if(e.target.matches('input,select')) return;
+    if(H.phase !== 'playing' && H.phase !== 'reveal') return;
+    if(e.code === 'Space'){ e.preventDefault(); ACT.pause(); }
+    if(e.key === 'ArrowRight' || e.key.toLowerCase() === 'n'){ e.preventDefault(); next(); }
+  });
+
+  connectPeer();
+  renderLobby();
+}
+
+/* =====================================================================
+   PAGE JOUEUR (TÉLÉPHONE)
+   ===================================================================== */
+function playerMain(){
+  const SR = window.SpeechRecognition || window.webkitSpeechRecognition;
+  const P = {name: store('bt-name') || '', lang: store('bt-lang') || 'fr-FR', peer: null, conn: null, state: null, rec: null, listening: false, retry: 0};
+
+  function renderJoin(msg){
+    app.innerHTML = `
+    <div class="phone">
+      <h1>Blind Test</h1>
+      <p class="muted">Partie <b>${esc(ROOM)}</b></p>
+      <form id="jf" style="display:flex;flex-direction:column;gap:12px">
+        <input id="nm" maxlength="16" placeholder="Ton prénom" value="${esc(P.name)}" autocomplete="nickname">
+        <button>Rejoindre</button>
+      </form>
+      ${msg ? `<p class="warn">${esc(msg)}</p>` : ''}
+      ${SR ? '' : '<p class="warn">La reconnaissance vocale n’est pas disponible sur ce navigateur : tu pourras répondre au clavier. Sur iPhone, utilise Safari ; sur Android, Chrome.</p>'}
+    </div>`;
+    $('#jf').onsubmit = e => {
+      e.preventDefault();
+      const n = $('#nm').value.trim(); if(!n) return $('#nm').focus();
+      P.name = n; store('bt-name', n); renderShell(); connect();
+      try{ navigator.wakeLock && navigator.wakeLock.request('screen').catch(() => {}); }catch(e){}
+    };
+  }
+
+  function connect(){
+    setStatus('<span class="muted">Connexion à la partie…</span>');
+    if(P.peer) try{ P.peer.destroy(); }catch(e){}
+    const peer = new Peer({debug: 0}); P.peer = peer;
+    peer.on('open', () => {
+      const c = peer.connect(PREFIX + ROOM, {reliable: true}); P.conn = c;
+      c.on('open', () => { P.retry = 0; c.send({t: 'hello', name: P.name}); });
+      c.on('data', onState);
+      c.on('close', () => { if(P.peer === peer) reconnect(); });
+    });
+    peer.on('error', e => {
+      if(e.type === 'peer-unavailable') return renderJoin('Partie « ' + ROOM + ' » introuvable. Vérifie le code affiché sur la TV, ou rescanne le QR code.');
+      reconnect();
+    });
+  }
+  function reconnect(){
+    if(P.retry > 8) return renderJoin('Connexion perdue. Rejoins à nouveau.');
+    P.retry++; setStatus('<span class="muted">Reconnexion…</span>');
+    setTimeout(connect, 1500);
+  }
+
+  function renderShell(){
+    app.innerHTML = `
+    <div class="phone">
+      <div class="hdr"><b>${esc(P.name)}</b><span id="sc">0 pt</span></div>
+      <div class="status" id="st"></div>
+      <button class="mic" id="mic" ${SR ? '' : 'disabled'}>${SR ? '🎤<br>Appuie et parle' : 'Micro<br>indisponible'}</button>
+      <div class="heard" id="heard"></div>
+      ${SR ? `<div class="lang"><span class="muted small" style="align-self:center">Micro :</span>
+        <button data-l="fr-FR" class="${P.lang === 'fr-FR' ? '' : 'ghost'}">Français</button>
+        <button data-l="en-US" class="${P.lang === 'en-US' ? '' : 'ghost'}">English</button></div>` : ''}
+      <form id="tf" class="row"><input id="tx" placeholder="Ou tape ta réponse" autocomplete="off"><button>Envoyer</button></form>
+    </div>`;
+    $('#mic').onclick = () => P.listening ? stopListening() : startListening();
+    document.querySelectorAll('[data-l]').forEach(b => b.onclick = () => {
+      P.lang = b.dataset.l; store('bt-lang', P.lang);
+      document.querySelectorAll('[data-l]').forEach(x => x.className = x.dataset.l === P.lang ? '' : 'ghost');
+    });
+    $('#tf').onsubmit = e => {
+      e.preventDefault(); const v = $('#tx').value.trim(); if(!v) return;
+      send(v, [], true); $('#heard').textContent = '« ' + v + ' »'; $('#tx').value = '';
+    };
+    if(P.state) onState(P.state);
+  }
+  function setStatus(html){ const el = $('#st'); if(el) el.innerHTML = html; }
+
+  function onState(s){
+    if(!s || s.t !== 'state') return;
+    const prev = P.state; P.state = s;
+    const sc = $('#sc'); if(!sc) return;
+    sc.textContent = s.score + ' pt' + (s.score > 1 ? 's' : '') + (s.count > 1 ? ` · ${s.rank}${s.rank === 1 ? 'er' : 'e'}/${s.count}` : '');
+    const mine = k => s.found[k] === s.me;
+    if(prev && prev.phase === 'playing' && s.phase === 'playing' && ((mine('artist') && prev.found.artist !== s.me) || (mine('title') && prev.found.title !== s.me))){
+      try{ navigator.vibrate && navigator.vibrate([60, 40, 120]); }catch(e){}
+      const st = $('#st'); st.classList.remove('flash'); void st.offsetWidth; st.classList.add('flash');
+    }
+    if(!prev || prev.round !== s.round || prev.phase !== s.phase){ if(s.phase === 'playing' && (!prev || prev.round !== s.round)) $('#heard').textContent = ''; }
+    const slotChip = (k, label) => {
+      const who = s.found[k];
+      return `<span class="${who === s.me ? 'y' : ''}">${label} ${who ? (who === s.me ? '✓ toi !' : '✓ ' + esc(who)) : '…'}</span>`;
+    };
+    if(s.phase === 'lobby') setStatus('<b>Tu es dans la partie 🎉</b><span class="muted small">En attente du lancement. Teste ton micro : ta phrase s’affiche sur la TV.</span>');
+    else if(s.phase === 'playing') setStatus(`<b>Manche ${s.round} / ${s.total}</b><div class="st-slots">${slotChip('artist', 'Artiste')}${slotChip('title', 'Titre')}</div>`);
+    else if(s.phase === 'reveal' && s.reveal) setStatus(`<div class="rev">${s.reveal.cover ? `<img src="${esc(s.reveal.cover)}" alt="">` : ''}<div><b>${esc(s.reveal.title)}</b><br><span class="muted">${esc(s.reveal.artist)}</span></div></div><div class="st-slots">${slotChip('artist', 'Artiste')}${slotChip('title', 'Titre')}</div>`);
+    else if(s.phase === 'end') setStatus(`<b>Partie terminée !</b><span>Tu finis ${s.rank}${s.rank === 1 ? 'er 🏆' : 'e'} avec ${s.score} pt${s.score > 1 ? 's' : ''}</span>`);
+  }
+
+  function send(text, alts, final){
+    if(P.conn && P.conn.open) try{ P.conn.send({t: 'answer', text, alts, final}); }catch(e){}
+  }
+  function startListening(){
+    if(!SR || P.listening) return;
+    let rec;
+    try{ rec = new SR(); }catch(e){ return; }
+    P.rec = rec; rec.lang = P.lang; rec.interimResults = true; rec.continuous = false; rec.maxAlternatives = 5;
+    let lastSent = '', sentFinal = false;
+    rec.onresult = e => {
+      let text = ''; const alts = []; let final = false;
+      for(let i = 0; i < e.results.length; i++){
+        const r = e.results[i]; text += r[0].transcript;
+        if(r.isFinal) final = true;
+        for(let j = 1; j < r.length; j++) alts.push(r[j].transcript);
+      }
+      text = text.trim(); if(!text) return;
+      $('#heard').textContent = '« ' + text + ' »';
+      if(final){ sentFinal = true; send(text, alts, true); }
+      else if(text !== lastSent){ lastSent = text; send(text, alts, false); }
+    };
+    rec.onerror = e => {
+      if(e.error === 'not-allowed' || e.error === 'service-not-allowed') $('#heard').textContent = 'Micro refusé : autorise-le dans les réglages du navigateur (et active Siri / Dictée sur iPhone).';
+      else if(e.error === 'no-speech') $('#heard').textContent = 'Je n’ai rien entendu, réessaie.';
+    };
+    rec.onend = () => {
+      if(!sentFinal && lastSent) send(lastSent, [], true);
+      P.listening = false; const m = $('#mic'); if(m){ m.classList.remove('on'); m.innerHTML = '🎤<br>Appuie et parle'; }
+    };
+    try{ rec.start(); }catch(e){ return; }
+    P.listening = true; const m = $('#mic'); m.classList.add('on'); m.innerHTML = '👂<br>Je t’écoute…';
+  }
+  function stopListening(){ try{ P.rec && P.rec.stop(); }catch(e){} }
+
+  renderJoin();
+}
+</script>
+</body>
+</html>
