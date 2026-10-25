@@ -371,6 +371,7 @@ body.ph{background:#0C0414;position:relative;min-height:100dvh}
 .face span{font-size:13px;line-height:1.1;text-align:center}
 .face.sel{border-color:var(--gold);background:#3A1630;box-shadow:0 0 18px #FFC23D55}
 .face.sel img{box-shadow:0 0 0 3px var(--gold)}
+.faces .note{grid-column:1/-1;display:flex;flex-direction:column;align-items:center;gap:8px}
 .face.load .ph{animation:blink 1s ease-in-out infinite alternate}
 .row{display:flex;gap:8px}
 .row .inp{flex:1}
@@ -558,7 +559,12 @@ const esc = s => String(s ?? '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt
 function store(k, v){ try{ if(v === undefined) return localStorage.getItem(k); localStorage.setItem(k, v); }catch(e){ return null; } }
 function storeJSON(k, v){ try{ if(v === undefined) return JSON.parse(localStorage.getItem(k) || 'null'); localStorage.setItem(k, JSON.stringify(v)); }catch(e){ return null; } }
 function keepAwake(){ try{ navigator.wakeLock && navigator.wakeLock.request('screen').catch(() => {}); }catch(e){} }
-const isWikiImg = u => typeof u === 'string' && /^https:\/\/upload\.wikimedia\.org\/[^\s"'<>]+$/.test(u);
+const isWikiImg = u => typeof u === 'string' && /^https:\/\/(upload|thumb)\.wikimedia\.org\/[^\s"'<>]+$/.test(u);
+// Wikimedia n'accepte plus que certaines largeurs de vignette (sinon erreur 400/429) : on prend la taille standard au-dessus
+const THUMB_STEPS = [60, 120, 250, 330, 500];
+const stdThumb = u => String(u).replace(/\/(\d+)px-/, (m, n) => '/' + (THUMB_STEPS.find(x => x >= +n) || 500) + 'px-');
+// Photo qui ne charge pas : on remplace par la pastille avec l'initiale
+window.__avErr = img => { const s = document.createElement('span'); s.className = img.className; s.setAttribute('style', img.getAttribute('style') || ''); s.textContent = img.dataset.i || '?'; img.replaceWith(s); };
 const okColor = c => typeof c === 'string' && /^#[0-9a-f]{6}$/i.test(c) ? c : null;
 const pad2 = n => String(n).padStart(2, '0');
 const fmt = s => Math.floor(s / 60) + ':' + pad2(s % 60);
@@ -574,7 +580,7 @@ function avHTML(p, cls){
   if(!p) return `<span class="av ${cls}">?</span>`;
   const style = `style="--c:${okColor(p.color) || '#FFC23D'}"`;
   return isWikiImg(p.avatar)
-    ? `<img class="av ${cls}" ${style} src="${esc(p.avatar)}" alt="" referrerpolicy="no-referrer" loading="lazy">`
+    ? `<img class="av ${cls}" ${style} src="${esc(p.avatar)}" alt="" referrerpolicy="no-referrer" loading="lazy" data-i="${esc(String(p.name || '?').trim().charAt(0).toUpperCase() || '?')}" onerror="__avErr(this)">`
     : `<span class="av ${cls}" ${style}>${esc(String(p.name || '?').trim().charAt(0).toUpperCase() || '?')}</span>`;
 }
 const signHTML = (text, fs, w, h, sp) => `<div class="sign marquee" data-sp="${sp || 18}"><b class="signface" style="font-size:${fs}px;width:${w}px;height:${h}px">${esc(text)}</b></div>`;
@@ -1090,7 +1096,7 @@ function hostMain(){
       }
       let p = H.players.get(k);
       if(!p){ p = {name, key: k, score: 0, color: COLORS[H.players.size % COLORS.length], last: '', plays: true, admin: false, say: null}; H.players.set(k, p); }
-      p.avatar = isWikiImg(d.avatar) ? d.avatar : '';
+      p.avatar = isWikiImg(d.avatar) ? stdThumb(d.avatar) : '';
       p.avName = String(d.avName || '').slice(0, 40);
       if(wantsAdmin){
         const old = adminP(); if(old && old !== p){ old.admin = false; old.plays = true; }
@@ -1669,8 +1675,8 @@ function playerMain(){
   const saved = storeJSON('bt-av');
   const P = {
     name: store('bt-name') || '', lang: store('bt-lang') || 'fr-FR',
-    avatar: saved && isWikiImg(saved.url) ? saved : null,
-    faces: storeJSON('bt-faces') || {}, extra: [],
+    avatar: saved && isWikiImg(saved.url) ? {name: saved.name, url: stdThumb(saved.url)} : null,
+    faces: storeJSON('bt-faces2') || {}, extra: [], wikiDown: false, facesLoading: false,
     role: 'player', plays: true,
     peer: null, conn: null, state: null, adm: null, admView: '', admRound: 0, showAns: false,
     rec: null, listening: false, retry: 0, deadline: null, frozenUntil: 0, fleeUntil: 0, fleeTO: 0, fleeIV: 0, dodged: false
@@ -1678,41 +1684,62 @@ function playerMain(){
   let fx = null;
 
   /* ---- Photos des personnalités (Wikipédia en français) ---- */
-  async function faceFor(title){
-    if(P.faces[title] !== undefined) return P.faces[title];
-    let url = null;
-    try{
-      const r = await fetch('https://fr.wikipedia.org/api/rest_v1/page/summary/' + encodeURIComponent(title.replace(/ /g, '_')));
-      if(r.ok){ const j = await r.json(); url = j.thumbnail && j.thumbnail.source || null; }
-    }catch(e){}
-    if(!url) url = (await searchFace(title) || {}).url || null;
-    if(url && !isWikiImg(url)) url = null;
-    P.faces[title] = url; storeJSON('bt-faces', P.faces);
-    return url;
+  const WAPI = 'https://fr.wikipedia.org/w/api.php?action=query&format=json&formatversion=2&origin=*&prop=pageimages&piprop=thumbnail&pithumbsize=250';
+  const okThumb = pg => {
+    const u = pg && pg.thumbnail && String(pg.thumbnail.source || '').replace(/'/g, '%27').replace(/"/g, '%22'); // « d'Estaing »
+    return isWikiImg(u) ? stdThumb(u) : null;
+  };
+  async function wget(url){
+    const r = await fetch(url);
+    if(!r.ok) throw new Error('HTTP ' + r.status);
+    return r.json();
+  }
+  // Toutes les personnalités en une seule requête (au lieu d'une par photo)
+  async function loadStarFaces(){
+    const todo = STARS.filter(n => !P.faces[n]);
+    if(!todo.length) return;
+    let j;
+    try{ j = await wget(WAPI + '&redirects=1&titles=' + encodeURIComponent(todo.join('|'))); }
+    catch(e){ P.wikiDown = true; return; }
+    P.wikiDown = false;
+    const q = j.query || {}; const map = {};
+    (q.normalized || []).forEach(x => map[x.from] = x.to);
+    const redir = {}; (q.redirects || []).forEach(x => redir[x.from] = x.to);
+    const pages = {}; (q.pages || []).forEach(pg => pages[pg.title] = pg);
+    for(const n of todo){
+      let t = map[n] || n; t = redir[t] || t;
+      const url = okThumb(pages[t]);
+      if(url) P.faces[n] = url;
+    }
+    // Pages sans photo principale : on tente une recherche
+    for(const n of todo.filter(n => !P.faces[n])){ const f = await searchFace(n); if(f) P.faces[n] = f.url; }
+    storeJSON('bt-faces2', P.faces);
   }
   async function searchFace(q){
     try{
-      const r = await fetch('https://fr.wikipedia.org/w/api.php?action=query&format=json&origin=*&generator=search&gsrlimit=1&gsrsearch=' + encodeURIComponent(q) + '&prop=pageimages&piprop=thumbnail&pithumbsize=320');
-      const j = await r.json();
-      const pg = j.query && j.query.pages && Object.values(j.query.pages)[0];
-      if(pg && pg.thumbnail && isWikiImg(pg.thumbnail.source)) return {name: pg.title, url: pg.thumbnail.source};
-    }catch(e){}
+      const j = await wget(WAPI + '&generator=search&gsrlimit=3&gsrsearch=' + encodeURIComponent(q));
+      const pages = ((j.query || {}).pages || []).sort((a, b) => (a.index || 0) - (b.index || 0));
+      const pg = pages.find(okThumb);
+      P.wikiDown = false;
+      if(pg) return {name: pg.title, url: okThumb(pg)};
+    }catch(e){ P.wikiDown = true; }
     return null;
   }
   function faceBtn(name, url, loading){
     const sel = P.avatar && P.avatar.url === url && url;
-    return `<button type="button" class="face ${sel ? 'sel' : ''} ${loading ? 'load' : ''}" data-face="${esc(name)}" ${url ? '' : 'disabled'} aria-pressed="${sel ? 'true' : 'false'}">${url ? `<img src="${esc(url)}" alt="" referrerpolicy="no-referrer" loading="lazy">` : '<span class="ph"></span>'}<span>${esc(name)}</span></button>`;
+    return `<button type="button" class="face ${sel ? 'sel' : ''} ${loading ? 'load' : ''}" data-face="${esc(name)}" ${url ? '' : 'disabled'} aria-pressed="${sel ? 'true' : 'false'}">${url ? `<img src="${esc(url)}" alt="" referrerpolicy="no-referrer" loading="lazy" onerror="this.closest('.face').remove()">` : '<span class="ph"></span>'}<span>${esc(name)}</span></button>`;
   }
   function drawFaces(){
     const box = $('#faces'); if(!box) return;
-    const list = P.extra.concat(STARS.map(n => ({name: n, url: P.faces[n]})));
-    box.innerHTML = list.filter(f => f.url !== null).map(f => faceBtn(f.name, f.url, f.url === undefined)).join('');
+    const list = P.extra.concat(STARS.map(n => ({name: n, url: P.faces[n]}))).filter(f => f.url || P.facesLoading);
+    box.innerHTML = list.map(f => faceBtn(f.name, f.url, !f.url)).join('')
+      || `<p class="note">${P.wikiDown ? 'Photos indisponibles (Wikipédia ne répond pas). Pas grave : ton initiale sera affichée.' : 'Aucune photo trouvée.'} <button type="button" class="btn-ghost" id="fretry">RÉESSAYER</button></p>`;
+    const rt = $('#fretry'); if(rt) rt.onclick = loadFaces;
   }
-  function loadFaces(){
-    drawFaces();
-    let i = 0;
-    const worker = async () => { while(i < STARS.length){ const n = STARS[i++]; if(P.faces[n] === undefined){ await faceFor(n); drawFaces(); } } };
-    for(let k = 0; k < 6; k++) worker();
+  async function loadFaces(){
+    P.facesLoading = true; drawFaces();
+    await loadStarFaces();
+    P.facesLoading = false; drawFaces();
   }
 
   function renderJoin(msg){
@@ -1748,7 +1775,7 @@ function playerMain(){
       const btn = e.target.querySelector('button'); btn.disabled = true; btn.textContent = '…';
       const f = await searchFace(q);
       btn.disabled = false; btn.textContent = 'CHERCHER';
-      if(!f){ $('#cq').value = ''; $('#cq').placeholder = 'Pas de photo trouvée, essaie un autre nom'; return; }
+      if(!f){ $('#cq').value = ''; $('#cq').placeholder = P.wikiDown ? 'Wikipédia ne répond pas, réessaie' : 'Pas de photo trouvée, essaie un autre nom'; return; }
       P.extra = [f].concat(P.extra.filter(x => x.url !== f.url));
       P.avatar = f; storeJSON('bt-av', f); $('#cq').value = ''; drawFaces();
       $('#faces').scrollTop = 0;
