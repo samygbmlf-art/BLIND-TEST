@@ -503,6 +503,7 @@ body.ph{background:#0C0414;position:relative;min-height:100dvh}
 .sheet .bets{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
 .sheet .bets .btn-gold{min-height:62px;font-size:26px}
 .sheet .go{min-height:56px;font-size:18px}
+.logbox{height:42dvh;font-size:13px;line-height:1.35;padding:8px 10px;resize:none;font-family:ui-monospace,Menlo,Consolas,monospace;white-space:pre-wrap}
 .ice{position:fixed;inset:0;z-index:60;display:flex;flex-direction:column;align-items:center;justify-content:center;gap:12px;text-align:center;color:#0B2540;font-family:var(--display);font-size:30px;background:radial-gradient(circle at 30% 20%,#FFFFFFF2,#CFEFFFF2 40%,#86CDF5F2);user-select:none;-webkit-user-select:none;touch-action:manipulation}
 .ice b{font-size:76px;font-weight:400;line-height:1}
 .ice small{font-family:var(--body);font-weight:700;font-size:19px}
@@ -693,23 +694,86 @@ function makeFX(){
 }
 
 /* ---------------- Correspondance tolérante des réponses ---------------- */
-const STOP = new Set(['the','le','la','les','l','un','une','a','et','and','de','du','des','d','of']);
+const STOP = new Set(['the','le','la','les','l','un','une','a','et','and','de','du','des','d','of','in','on','en','to','au','aux']);
+// Nombres écrits en lettres (français et anglais) → chiffres, pour que « cinq », « five » et « 5 » se valent
+const NUMW = {zero:0,un:1,une:1,deux:2,trois:3,quatre:4,cinq:5,six:6,sept:7,huit:8,neuf:9,dix:10,onze:11,douze:12,treize:13,quatorze:14,quinze:15,seize:16,
+  vingt:20,vingts:20,mil:1000,trente:30,quarante:40,cinquante:50,soixante:60,septante:70,huitante:80,octante:80,nonante:90,cent:100,cents:100,mille:1000,
+  one:1,two:2,three:3,four:4,five:5,seven:7,eight:8,nine:9,ten:10,eleven:11,twelve:12,thirteen:13,fourteen:14,fifteen:15,sixteen:16,seventeen:17,eighteen:18,nineteen:19,
+  twenty:20,thirty:30,forty:40,fifty:50,sixty:60,seventy:70,eighty:80,ninety:90,hundred:100,thousand:1000};
+const LONE = new Set(['un','une','one','six','sept','neuf','cent']); // seuls, ce sont souvent de vrais mots (« un », « neuf », « cent »…)
+function numify(ws){
+  const out = []; let i = 0;
+  while(i < ws.length){
+    if(!(ws[i] in NUMW)){ out.push(ws[i]); i++; continue; }
+    let j = i; const seq = []; const at = [];
+    while(j < ws.length){
+      if(ws[j] in NUMW){ seq.push(NUMW[ws[j]]); at.push(j); j++; }
+      else if((ws[j] === 'et' || ws[j] === 'and') && j + 1 < ws.length && ws[j + 1] in NUMW && seq.length){ j++; }
+      else break;
+    }
+    if(seq.length === 1 && LONE.has(ws[i])){ out.push(ws[i]); i++; continue; }
+    let total = 0, cur = 0, prev = null, used = 0;
+    for(const v of seq){
+      if(v === 100 && cur >= 20){ break; } // « cinquante cent » : ce « cent » n'est pas un nombre
+      if(v === 100) cur = (cur || 1) * 100;
+      else if(v === 1000){ total += (cur || 1) * 1000; cur = 0; }
+      else if(v === 20 && prev === 4 && cur % 100 === 4) cur += 76;              // quatre-vingt
+      else if(v >= 20 && cur > 0 && cur < 100 && cur % 10 !== 0) cur = cur * 100 + v; // nineteen eighty → 1980
+      else cur += v;
+      prev = v; used++;
+    }
+    out.push(String(total + cur)); i = used < seq.length ? at[used] : j;
+  }
+  return out;
+}
 function norm(s){
   return String(s || '').toLowerCase()
     .normalize('NFD').replace(/[̀-ͯ]/g, '')
     .replace(/\(.*?\)|\[.*?\]/g, ' ')
     .replace(/\b(feat|ft|featuring)\b.*$/, ' ')
     .replace(/&/g, ' et ')
+    .replace(/(\w)['’](\w)/g, (m, a, b) => /^[ldjmnstc]$/.test(a) ? a + ' ' + b : a + b) // l'amour → l amour ; don't → dont
     .replace(/[^a-z0-9 ]+/g, ' ')
+    .replace(/(\d)([a-z])|([a-z])(\d)/g, (m, a, b, c, d) => a ? a + ' ' + b : c + ' ' + d) // u2 → u 2
     .replace(/\s+/g, ' ').trim();
 }
-function words(s){ return norm(s).split(' ').filter(Boolean); }
-function core(s){ const w = words(s); const f = w.filter(x => !STOP.has(x)); return f.length ? f : w; }
-function squash(s){ // phonétique très simplifiée, utile pour fr-FR qui écrit les noms anglais « à l'oreille »
-  return s.replace(/ph/g,'f').replace(/qu|ck|q|c(?=[aou])/g,'k').replace(/y/g,'i')
-          .replace(/ee|ea/g,'i').replace(/oo/g,'ou').replace(/w/g,'ou').replace(/h/g,'')
-          .replace(/(.)\1+/g,'$1').replace(/[esxtdz]$/,'');
+function spelled(ws){
+  const out = [];
+  for(const w of ws){
+    const last = out[out.length - 1];
+    if(w.length === 1 && /[a-z]/.test(w) && last && last.sp){ last.w += w; continue; }
+    out.push({w, sp: w.length === 1 && /[a-z]/.test(w)});
+  }
+  return out.map(o => o.w);
 }
+function words(s){ return numify(spelled(norm(s).split(' ').filter(Boolean))); }
+// Mots « de remplissage » qu'on dit autour de la réponse
+const FILL = new Set(['c','cest','est','je','j','crois','pense','que','qui','ca','ce','euh','heu','hum','oui','non','alors','peut','etre','il','elle','y','chante','chanson','titre','artiste','groupe','by','it','is','its','mais','bah','ben','genre','enfin','oh','ah','voila','normalement','sur','sais','pas','par','cette','ici','c est','facile','trop','bon','ok','attends','attend']);
+function core(s){ const w = words(s); const f = w.filter(x => !STOP.has(x)); return f.length ? f : w; }
+// Phonétique simplifiée, commune au français et à l'anglais « prononcé à la française » :
+// « Maïkeul Djakson » ≈ « Michael Jackson », « Bohémienne rapsodie » ≈ « Bohemian Rhapsody »
+function phon1(w, th){
+  if(/^\d+$/.test(w)) return w;
+  if(w === 'you') return 'u';
+  return w
+    .replace(/^mc/, 'mak').replace(/ough/g, 'o').replace(/augh/g, 'o').replace(/igh/g, 'ai').replace(/gh/g, 'g')
+    .replace(/sch|sh|tch/g, 'ch').replace(/ph/g, 'f').replace(/th/g, th || 't').replace(/wh/g, 'w')
+    .replace(/chae|cha(?=el)/g, 'ke').replace(/^ch(?=r)/, 'k')
+    .replace(/ck|qu|q|kw/g, 'k').replace(/ch/g, '§').replace(/c(?=[eiy])/g, 's').replace(/c/g, 'k').replace(/x/g, 'ks')
+    .replace(/dj|dg/g, 'j').replace(/g(?=[eiy])/g, 'j').replace(/gu(?=[ei])/g, 'g')
+    .replace(/eau|au|ow(?=$|[^aeiouy])/g, 'o')
+    .replace(/oo|ou|w/g, 'u')
+    .replace(/ee|ea|ie(?=.)|y/g, 'i')
+    .replace(/eur/g, 'er').replace(/oeu|eu|oe/g, 'e').replace(/ai|ay|ei|ey/g, 'e')
+    .replace(/h/g, '')
+    .replace(/z/g, 's')
+    .replace(/(.)\1+/g, '$1')
+    .replace(/er/g, 'e')
+    .replace(/(?<=..)[estdxz]+$/, '')
+    .replace(/(?<=..)e$/, '');
+}
+const phon = (list, th) => list.map(w => phon1(w, th)).join('');
+const TH = ['t', 's', 'f', 'z']; // « th » se prononce de mille façons à la française
 function lev(a, b){
   if(a === b) return 0;
   let prev = Array.from({length: b.length + 1}, (_, i) => i);
@@ -723,26 +787,60 @@ function lev(a, b){
 }
 const digits = s => s.replace(/\D/g, '');
 function sim(a, b){ const m = Math.max(a.length, b.length); return m ? 1 - lev(a, b) / m : 1; }
-function matches(said, target){
+const GENERIC = new Set(['punk','band','boys','boyz','girls','club','roses','fire','crew','family','project','brothers','sisters','orchestra','orchestre','group','groupe','kids','people','gang','music','musique','sound','stars','star','city','love','heart','black','white','blue','red','king','queen','prince','little','big','young','junior','senior','soul','rock','pop','jazz','dance','house','live','world','night','day','life']);
+// Fenêtres de mots de la réponse comparées à la cible (phonétique), avec un seuil selon la longueur
+function scan(sw, tw, fn, extra){
+  const n = tw.length;
+  for(let len = Math.max(1, n - 1); len <= n + 1 + (extra || 0); len++)
+    for(let i = 0; i + len <= sw.length; i++) if(fn(sw.slice(i, i + len))) return true;
+  return false;
+}
+function matches(said, target, kind){
   const tw = core(target); if(!tw.length) return false;
-  const tj = squash(tw.join(''));
-  const raw = words(said);
+  const raw = words(said); if(!raw.length) return false;
   const sw = raw.filter(w => !STOP.has(w));
-  if(!raw.length) return false;
-  if(norm(said).includes(norm(target))) return true;
-  const short = tj.length <= 3;
-  const tdig = digits(tj);
+  if((' ' + raw.join(' ') + ' ').includes(' ' + words(target).join(' ') + ' ')) return true;
+  const tjs = [...new Set(TH.map(th => phon(tw, th)))]; const tj = tjs[0];
+  const tdig = digits(tw.join(''));
   const sdig = digits(raw.join(''));
   if(tdig && sdig && !sdig.includes(tdig)) return false; // un autre nombre a été prononcé
-  const thr = tj.length <= 6 ? 0.8 : 0.72;
+  const short = tj.length <= 3;
+  const thr = tj.length <= 5 ? .8 : tj.length <= 9 ? .75 : .7;
   for(const list of [sw, raw]){
-    const n = tw.length;
-    for(let len = Math.max(1, n - 1); len <= n + 1; len++){
-      for(let i = 0; i + len <= list.length; i++){
-        const cand = squash(list.slice(i, i + len).join(''));
-        if(digits(cand) && digits(cand) !== tdig) continue; // « 0 » ne doit pas valider « 2 »
-        if(short ? cand === tj : sim(cand, tj) >= thr) return true;
+    if(scan(list, tw, ws => {
+      const c = phon(ws);
+      if(digits(c) && digits(c) !== tdig) return false; // « 0 » ne doit pas valider « 2 »
+      if(ws.length < tw.length){
+        if(tjs.some(v => sim(c, v) >= .9)) return true; // « acdc » pour « AC DC »
+        // un mot en moins n'est toléré que s'il est mineur (« Maroon » pour « Maroon 5 »), pas pour « Dancing » → « Dancing Queen »
+        return tw.some((w, k) => /^\d+$/.test(w) && TH.some(th => sim(c, phon(tw.filter((x, j) => j !== k), th)) >= Math.max(thr, .8)));
       }
+      return tjs.some(v => short ? c === v : sim(c, v) >= thr);
+    }, tj.length >= 7 ? 2 : 0)) return true;
+  }
+  // Nom de famille seul pour un artiste : « Jackson », « Hallyday », « Gainsbourg »
+  if(kind === 'artist' && tw.length >= 2 && tw.length <= 3 && !/\d/.test(tw.join(''))){
+    const last = tw[tw.length - 1];
+    if(last.length >= 4 && !GENERIC.has(last)){
+      const lp = phon1(last);
+      const fp = phon1(tw[0]);
+      for(let k = 0; k < raw.length; k++){
+        if(sim(phon1(raw[k]), lp) < .85) continue;
+        // un autre prénom juste avant (« Janet Jackson »), ou autre chose juste après (« Jackson Five ») : refusé
+        const b = raw[k - 1], a = raw[k + 1];
+        const badB = b && !FILL.has(b) && !STOP.has(b) && sim(phon1(b), fp) < .7;
+        const badA = a && !FILL.has(a) && !STOP.has(a);
+        if(!badB && !badA) return true;
+      }
+    }
+  }
+  // Titre long : la grande majorité des mots importants suffit, dans n'importe quel ordre
+  if(kind === 'title'){
+    const big = tw.filter(w => w.length >= 3 || /^\d+$/.test(w));
+    if(big.length >= 3){
+      const sp = sw.map(phon1);
+      const hit = big.filter(w => { const p = phon1(w); return sp.some(x => x === p || (p.length >= 4 && sim(x, p) >= .8)); }).length;
+      if(hit >= 2 && hit / big.length >= .75) return true;
     }
   }
   return false;
@@ -750,14 +848,10 @@ function matches(said, target){
 // Ressemblance maximale (0 à 1), pour afficher « Presque ! »
 function bestSim(said, target){
   const tw = core(target); if(!tw.length) return 0;
-  const tj = squash(tw.join('')); if(tj.length < 4) return 0;
+  const tjs = [...new Set(TH.map(th => phon(tw, th)))]; if(tjs[0].length < 4) return 0;
   const raw = words(said); const sw = raw.filter(w => !STOP.has(w));
   let best = 0;
-  for(const list of [sw, raw]){
-    const n = tw.length;
-    for(let len = Math.max(1, n - 1); len <= n + 1; len++)
-      for(let i = 0; i + len <= list.length; i++) best = Math.max(best, sim(squash(list.slice(i, i + len).join('')), tj));
-  }
+  for(const list of [sw, raw]) scan(list, tw, ws => { const c = phon(ws); for(const v of tjs) best = Math.max(best, sim(c, v)); return false; }, tjs[0].length >= 7 ? 2 : 0);
   return best;
 }
 
@@ -774,7 +868,7 @@ function hostMain(){
     players: new Map(), adminKey: null, seen: new Set(), phase: 'lobby', tracks: [], idx: -1, cur: null,
     found: {artist: null, title: null}, foundKey: {artist: null, title: null}, feed: [], feedId: 0,
     q: '', results: null, playlist: null, loading: '', n: 15, auto: true, order: store('bt-order') || 'random', hint: store('bt-hint') !== '0',
-    played: new Set(storeJSON('bt-played') || []),
+    played: new Set(storeJSON('bt-played') || []), log: storeJSON('bt-log') || [], logTO: 0,
     audio: new Audio(), ctx: null, unlocked: false, nextTO: 0, revealTO: 0, sayTO: 0, roundToken: 0,
     screen: '', drawnRound: -1, drawnRev: null, anim: {artist: false, title: false}, bump: null,
     powersOn: store('bt-powers') !== '0', bomb: null, parasite: new Map(), bets: new Map(), helium: null, banQ: [], banBusy: false
@@ -1051,7 +1145,7 @@ function hostMain(){
   function sendAdmin(){
     const p = adminP();
     if(!p || !p.conn || !p.conn.open) return;
-    const a = {t: 'admin', phase: H.phase, unlocked: H.unlocked, auto: H.auto, n: H.n, order: H.order, hint: H.hint, powersOn: H.powersOn};
+    const a = {t: 'admin', logN: H.log.length, phase: H.phase, unlocked: H.unlocked, auto: H.auto, n: H.n, order: H.order, hint: H.hint, powersOn: H.powersOn};
     if(H.phase === 'lobby'){
       a.results = Array.isArray(H.results)
         ? H.results.slice(0, 30).map(r => ({id: r.id, title: r.title, nb: r.nb_tracks, pic: r.picture_small || r.picture_medium}))
@@ -1092,6 +1186,8 @@ function hostMain(){
       }
       case 'quit': if(H.phase === 'playing' || H.phase === 'reveal') endGame(); break;
       case 'lobby': if(H.phase === 'end') backToLobby(); break;
+      case 'log': { const p = adminP(); if(p && p.conn && p.conn.open) try{ p.conn.send({t: 'log', text: logText(), n: H.log.length}); }catch(e){} break; }
+      case 'logclear': H.log = []; storeJSON('bt-log', []); sendAdmin(); break;
     }
   }
   function freeAdmin(){
@@ -1237,6 +1333,21 @@ function hostMain(){
     if(H.found.artist && H.found.title) H.revealTO = setTimeout(reveal, 1800);
     return true;
   }
+  /* ---- Journal du micro : ce qui a été entendu et ce qui était attendu ---- */
+  function saveLog(){ clearTimeout(H.logTO); H.logTO = setTimeout(() => { H.log = H.log.slice(-400); storeJSON('bt-log', H.log); }, 800); }
+  function logAnswer(e, p, alts, lang){
+    H.log.push({id: e.id, t: e.t, who: p.name, said: e.text, alts, lang: /^[a-z]{2}-[A-Z]{2}$/.test(lang || '') ? lang : '',
+      artist: fieldText(H.cur, 'artist'), title: fieldText(H.cur, 'title'),
+      res: e.got.length ? e.got.map(g => g === 'artist' ? 'artiste' : 'titre').join(' + ') : (e.presque ? 'presque' : 'raté')});
+    saveLog();
+  }
+  function logText(){
+    const icon = r => /validé à la main/.test(r) ? '✋' : r === 'raté' ? '✗' : r === 'presque' ? '~' : '✓';
+    const d = new Date();
+    return `Journal du micro · Blind Test · ${d.toLocaleDateString('fr-FR')} · ${H.log.length} réponses\n` +
+      '✓ validé  ✋ validé à la main (le micro a raté)  ~ presque  ✗ raté\n\n' +
+      H.log.map(l => `${icon(l.res)} « ${l.said} »${l.alts && l.alts.length ? ` (aussi : ${l.alts.map(a => '« ' + a + ' »').join(', ')})` : ''}\n   attendu : ${l.artist} — ${l.title} · ${l.res}${l.lang ? ' · ' + l.lang : ''} · ${l.who}`).join('\n');
+  }
   function onAnswer(p, d){
     const text = String(d.text || '').slice(0, 120);
     if(H.phase === 'lobby'){ if(d.final){ p.last = text; refresh(); } return; }
@@ -1249,19 +1360,20 @@ function hostMain(){
     const got = [];
     for(const field of ['artist', 'title']){
       if(H.found[field]) continue;
-      const target = field === 'artist' ? H.cur.artist.name : title(H.cur);
-      if(texts.some(s => matches(s, target)) && award(p, field)) got.push(field);
+      const target = fieldText(H.cur, field);
+      if(texts.some(s => matches(s, target, field)) && award(p, field)) got.push(field);
     }
     let presque = false;
     if(d.final && !got.length){
       for(const field of ['artist', 'title']){
         if(H.found[field]) continue;
-        const target = field === 'artist' ? H.cur.artist.name : title(H.cur);
+        const target = fieldText(H.cur, field);
         if(texts.some(s => bestSim(s, target) >= .5)) presque = true;
       }
     }
     if(d.final || got.length){
       const entry = {id: ++H.feedId, key: p.key, text, got, presque, t: Date.now(), round: H.idx, final: true};
+      logAnswer(entry, p, texts.slice(1, 5), d.lang);
       H.feed.push(entry); if(H.feed.length > 30) H.feed.shift();
       p.say = entry;
     } else {
@@ -1524,7 +1636,10 @@ function hostMain(){
       const f = H.feed.find(x => x.id == d.i); if(!f) return;
       const field = d.f === 'artist' ? 'artist' : 'title';
       const p = H.players.get(f.key);
-      if(award(p, field)){ f.got.push(field); renderGame(); broadcast(); }
+      if(award(p, field)){
+        f.got.push(field); renderGame(); broadcast();
+        const l = H.log.find(x => x.id === f.id && x.t === f.t); if(l){ l.res = (l.res === 'raté' || l.res === 'presque' ? '' : l.res + ' + ') + 'validé à la main : ' + (field === 'artist' ? 'artiste' : 'titre'); saveLog(); }
+      }
     }
   };
   document.addEventListener('click', e => { const a = e.target.closest('[data-act]'); if(a && !a.disabled && ACT[a.dataset.act]) ACT[a.dataset.act](a.dataset); });
@@ -1679,7 +1794,34 @@ function playerMain(){
     else if(d.t === 'denied'){ stopPeer(); renderJoin('« ' + d.who + ' » anime déjà la partie. Rejoins comme joueur, ou demande qu’on le retire depuis la TV.'); }
     else if(d.t === 'revoked'){ P.role = 'player'; P.plays = true; P.admView = ''; P.adm = null; renderShell(); }
     else if(d.t === 'news') news(d.text, d.bad);
+    else if(d.t === 'log') showLog(String(d.text || ''), +d.n || 0);
     else if(d.t === 'fx'){ if(d.kind === 'freeze') freeze(+d.ms || 10000); else if(d.kind === 'flee') flee(+d.ms || 15000); }
+  }
+
+  /* ---- Journal du micro (régie) ---- */
+  function showLog(text, n){
+    const el = document.createElement('div'); el.className = 'sheet';
+    el.innerHTML = `<div><h3>JOURNAL DU MICRO</h3>
+      <p>${n ? `${n} réponses enregistrées sur la TV. Envoie-les pour régler la reconnaissance sur vos voix.` : 'Rien d’enregistré pour l’instant : joue une partie d’abord.'}</p>
+      ${n ? `<textarea class="inp logbox" readonly></textarea>
+      <button type="button" class="btn-launch wide go" id="lshare">${navigator.share ? 'PARTAGER' : 'COPIER'}</button>
+      ${navigator.share ? '<button type="button" class="btn-ghost" id="lcopy">COPIER LE TEXTE</button>' : ''}
+      <button type="button" class="btn-ghost" id="lclear">VIDER LE JOURNAL</button>` : ''}
+      <button type="button" class="btn-ghost" id="lclose">FERMER</button></div>`;
+    document.body.appendChild(el);
+    const box = el.querySelector('.logbox'); if(box) box.value = text;
+    const close = () => el.remove();
+    const copy = async () => {
+      try{ await navigator.clipboard.writeText(text); news('📋 Journal copié'); }
+      catch(e){ if(box){ box.focus(); box.select(); try{ document.execCommand('copy'); news('📋 Journal copié'); }catch(err){ news('Sélectionne le texte et copie-le à la main', true); } } }
+    };
+    el.onclick = e => { if(e.target === el) close(); };
+    el.querySelector('#lclose').onclick = close;
+    const sh = el.querySelector('#lshare');
+    if(sh) sh.onclick = async () => { if(navigator.share){ try{ await navigator.share({title: 'Journal du micro · Blind Test', text}); }catch(e){} } else copy(); };
+    const cp = el.querySelector('#lcopy'); if(cp) cp.onclick = copy;
+    const cl = el.querySelector('#lclear');
+    if(cl) cl.onclick = () => { if(confirm('Vider le journal du micro ?')){ cmd({c: 'logclear'}); close(); news('Journal vidé'); } };
   }
 
   /* ---- Pouvoirs (téléphone) ---- */
@@ -1924,7 +2066,8 @@ function playerMain(){
           <div id="achosen" class="chosen"></div>
           <div class="aopts" id="aopts"></div>
           <button id="astart" class="btn-launch wide">LANCER LE SHOW</button>
-          <div id="aplayers" class="note"></div>`;
+          <div id="aplayers" class="note"></div>
+          <button type="button" class="btn-ghost" id="alog" data-c="log">JOURNAL DU MICRO</button>`;
         $('#as').onsubmit = e => {
           e.preventDefault(); const q = $('#aq').value.trim(); if(!q) return;
           const m = q.match(/playlist\/(\d+)/) || q.match(/^(\d{4,})$/);
@@ -1943,12 +2086,13 @@ function playerMain(){
         : a.playlist ? `<span class="ok">✓</span> ${esc(a.playlist.title)} <span class="muted">· ${a.playlist.count} extraits</span>` : '<span class="muted">Aucune playlist choisie</span>';
       $('#aopts').innerHTML = aoptsHTML(a);
       $('#astart').disabled = !a.playlist || !!a.loading;
+      $('#alog').textContent = 'JOURNAL DU MICRO (' + (a.logN || 0) + ')';
       $('#aplayers').textContent = a.players && a.players.length ? 'Candidats : ' + a.players.map(p => p.name).join(', ') : 'Aucun candidat pour l’instant.';
       return;
     }
     if(a.phase === 'end'){
       P.admView = 'end';
-      box.innerHTML = `<div class="rh"><span class="plaque">RÉGIE</span><b>FIN DU SHOW</b></div>${playersHTML(a, false)}<button class="btn-launch wide" data-c="lobby">NOUVELLE PARTIE</button>`;
+      box.innerHTML = `<div class="rh"><span class="plaque">RÉGIE</span><b>FIN DU SHOW</b></div>${playersHTML(a, false)}<button class="btn-launch wide" data-c="lobby">NOUVELLE PARTIE</button><button type="button" class="btn-ghost" data-c="log">JOURNAL DU MICRO (${a.logN || 0})</button>`;
       return;
     }
     // manche en cours ou révélation
@@ -1998,7 +2142,7 @@ function playerMain(){
 
   /* ---- Micro ---- */
   function send(text, alts, final){
-    if(P.conn && P.conn.open) try{ P.conn.send({t: 'answer', text, alts, final}); }catch(e){}
+    if(P.conn && P.conn.open) try{ P.conn.send({t: 'answer', text, alts, final, lang: P.lang}); }catch(e){}
   }
   function micIdleBtn(m){ m.classList.remove('on'); m.innerHTML = micIdle(); }
   function startListening(){
